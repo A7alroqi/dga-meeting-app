@@ -1,0 +1,37 @@
+[
+  {
+    "name": "رفع نضج الجهات في منظور البحث والابتكار",
+    "kpiType": "strategic",
+    "targetUnit": "%",
+    "achievedUnit": "%",
+    "targetValue": 29,
+    "achievedValue": 23,
+    "year": 2026,
+    "sortOrder": 0,
+    "verified": true
+  },
+  {
+    "name": "تبني الحلول الابتكارية",
+    "kpiType": "strategic",
+    "targetUnit": "عدد",
+    "achievedUnit": "عدد",
+    "targetValue": 2,
+    "achievedValue": 0,
+    "year": 2026,
+    "sortOrder": 1,
+    "verified": true
+  },
+  { "name": "تنفيذ أحداث لنشر ثقافة الابتكار الحكومي", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 2, "verified": false },
+  { "name": "تنفيذ جلسات حوارية لمجتمع الابتكار الحكومي", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 3, "verified": false },
+  { "name": "عدد المستفيدين من أنشطة وبرامج نشر ثقافة الابتكار الحكومي", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 4, "verified": false },
+  { "name": "إطلاق إطار للابتكار الحكومي", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 5, "verified": false },
+  { "name": "عدد المساهمات المقدمة للجهات الحكومية لتبني الحلول الابتكارية", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 6, "verified": false },
+  { "name": "عدد المستفيدين من أنشطة وبرامج مجتمع الابتكار", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 7, "verified": false },
+  { "name": "عدد المشاركات في الفعاليات الخارجية لنشر ثقافة الابتكار", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 8, "verified": false },
+  { "name": "عدد الخدمات الاستشارية المقدمة", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 9, "verified": false },
+  { "name": "عدد الشراكات الداعمة للابتكار الحكومي", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 10, "verified": false },
+  { "name": "رضا المستفيدين عن أنشطة وبرامج نشر ثقافة الابتكار الحكومي", "kpiType": "operational", "targetUnit": "%", "achievedUnit": "%", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 11, "verified": false },
+  { "name": "رضا المستفيدين عن أنشطة وبرامج مجتمع الابتكار", "kpiType": "operational", "targetUnit": "%", "achievedUnit": "%", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 12, "verified": false },
+  { "name": "رضا المستفيدين عن الخدمات الاستشارية المقدمة من الإدارة", "kpiType": "operational", "targetUnit": "%", "achievedUnit": "%", "targetValue": null, "achievedValue": null, "year": 2026, "sortOrder": 13, "verified": false },
+  { "name": "إعداد مستندات تنظيمية تدعم تبني الابتكار الحكومي", "kpiType": "operational", "targetUnit": "عدد", "achievedUnit": "عدد", "targetValue": 2, "achievedValue": null, "year": 2026, "sortOrder": 14, "verified": false }
+]

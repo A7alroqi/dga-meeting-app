@@ -1,0 +1,8 @@
+[
+  { "responsibilityTask": "جمع التحديثات من الفريق", "responsibleText": "بالتناوب (أسماء – أحمد)", "sortOrder": 0 },
+  { "responsibilityTask": "تحديث المؤشرات الاستراتيجية والتشغيلية", "responsibleText": "أسماء الهندي", "sortOrder": 1 },
+  { "responsibilityTask": "إعادة صياغة المهام والتحديثات إن لزم", "responsibleText": "أسماء الهندي - أحمد الروقي", "sortOrder": 2 },
+  { "responsibilityTask": "مراجعة العرض", "responsibleText": "مي الدحيم", "sortOrder": 3 },
+  { "responsibilityTask": "إضافة الروابط للملفات التي سيتم استعراضها قبل الاجتماع", "responsibleText": "الفريق", "sortOrder": 4 },
+  { "responsibilityTask": "كتابة المحضر", "responsibleText": "أحمد الروقي", "sortOrder": 5 }
+]

@@ -1,0 +1,14 @@
+[
+  { "name": "عضوية مجتمعية مفتوحة", "sortOrder": 0 },
+  { "name": "فعاليات مجتمعية منتظمة", "sortOrder": 1 },
+  { "name": "تحدّيات ابتكار", "sortOrder": 2 },
+  { "name": "الإرشاد والتوجيه", "sortOrder": 3 },
+  { "name": "التشبيك", "sortOrder": 4 },
+  { "name": "تبادل المعرفة", "sortOrder": 5 },
+  { "name": "منصة رقمية", "sortOrder": 6 },
+  { "name": "مجتمعات الممارسة", "sortOrder": 7 },
+  { "name": "التعاون عبر القطاعات", "sortOrder": 8 },
+  { "name": "فرص التطوّع", "sortOrder": 9 },
+  { "name": "التفاعل طويل الأمد", "sortOrder": 10 },
+  { "name": "الارتباط بمنظومة الابتكار", "sortOrder": 11 }
+]

@@ -1,0 +1,14 @@
+[
+  { "capabilityIndex": 0, "values": { "sic": "yes", "misk_hub": "no", "diwan": "partial", "monshaat": "partial" } },
+  { "capabilityIndex": 1, "values": { "sic": "yes", "misk_hub": "no", "diwan": "partial", "monshaat": "yes" } },
+  { "capabilityIndex": 2, "values": { "sic": "no", "misk_hub": "yes", "diwan": "yes", "monshaat": "yes" } },
+  { "capabilityIndex": 3, "values": { "sic": "partial", "misk_hub": "yes", "diwan": "yes", "monshaat": "yes" } },
+  { "capabilityIndex": 4, "values": { "sic": "yes", "misk_hub": "partial", "diwan": "yes", "monshaat": "yes" } },
+  { "capabilityIndex": 5, "values": { "sic": "yes", "misk_hub": "partial", "diwan": "yes", "monshaat": "yes" } },
+  { "capabilityIndex": 6, "values": { "sic": "yes", "misk_hub": "partial", "diwan": "yes", "monshaat": "yes" } },
+  { "capabilityIndex": 7, "values": { "sic": "partial", "misk_hub": "no", "diwan": "partial", "monshaat": "yes" } },
+  { "capabilityIndex": 8, "values": { "sic": "yes", "misk_hub": "partial", "diwan": "yes", "monshaat": "yes" } },
+  { "capabilityIndex": 9, "values": { "sic": "yes", "misk_hub": "no", "diwan": "no", "monshaat": "no" } },
+  { "capabilityIndex": 10, "values": { "sic": "yes", "misk_hub": "no", "diwan": "partial", "monshaat": "yes" } },
+  { "capabilityIndex": 11, "values": { "sic": "yes", "misk_hub": "partial", "diwan": "yes", "monshaat": "yes" } }
+]

@@ -1,0 +1,264 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  role         String   @default("guest") // admin | employee | guest
+  isActive     Boolean  @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  createdTasks     Task[]          @relation("TaskCreatedBy")
+  updatedTasks     Task[]          @relation("TaskUpdatedBy")
+  taskHistory      TaskHistory[]
+  taskAssignees    TaskAssignee[]
+  meetings         Meeting[]
+  challenges       Challenge[]
+  kpiUpdates       Kpi[]
+
+  @@map("users")
+}
+
+model PriorityCategory {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  nameAr      String
+  descriptionAr String?
+  sortOrder   Int      @default(0)
+
+  tasks Task[]
+  kpis  Kpi[]
+
+  @@map("priority_categories")
+}
+
+model Task {
+  id                 String    @id @default(cuid())
+  title              String
+  categoryId         String?
+  priorityLevel      String    @default("medium") // high | medium | low
+  status             String    @default("not_started")
+  completionPercent  Int       @default(0)
+  latestUpdateNote   String?
+  dueDate            DateTime?
+  dueDateRaw         String?
+  isOngoing          Boolean   @default(false)
+  isArchived         Boolean   @default(false)
+  deletedAt          DateTime?
+  createdById        String?
+  updatedById        String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  category   PriorityCategory? @relation(fields: [categoryId], references: [id])
+  createdBy  User?             @relation("TaskCreatedBy", fields: [createdById], references: [id])
+  updatedBy  User?             @relation("TaskUpdatedBy", fields: [updatedById], references: [id])
+  assignees  TaskAssignee[]
+  milestones TaskMilestone[]
+  history    TaskHistory[]
+
+  @@map("tasks")
+}
+
+model TaskAssignee {
+  id          String  @id @default(cuid())
+  taskId      String
+  userId      String?
+  displayName String
+
+  task Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("task_assignees")
+}
+
+model TaskMilestone {
+  id        String  @id @default(cuid())
+  taskId    String
+  label     String
+  isDone    Boolean @default(false)
+  sortOrder Int     @default(0)
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@map("task_milestones")
+}
+
+model TaskHistory {
+  id          String   @id @default(cuid())
+  taskId      String
+  changedById String?
+  changedAt   DateTime @default(now())
+  fieldName   String
+  oldValue    String?
+  newValue    String?
+  note        String?
+
+  task      Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  changedBy User? @relation(fields: [changedById], references: [id])
+
+  @@map("task_history")
+}
+
+model Meeting {
+  id           String   @id @default(cuid())
+  meetingDate  DateTime
+  title        String?
+  createdById  String?
+  createdAt    DateTime @default(now())
+
+  createdBy  User?       @relation(fields: [createdById], references: [id])
+  challenges Challenge[]
+
+  @@map("meetings")
+}
+
+model Challenge {
+  id             String  @id @default(cuid())
+  meetingId      String
+  description    String
+  supportNeeded  String?
+  sortOrder      Int     @default(0)
+  createdById    String?
+  createdAt      DateTime @default(now())
+
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  createdBy User?   @relation(fields: [createdById], references: [id])
+
+  @@map("challenges")
+}
+
+model Kpi {
+  id              String  @id @default(cuid())
+  categoryId      String?
+  kpiType         String  @default("operational") // strategic | operational
+  name            String
+  targetValue     Float?
+  targetUnit      String?
+  achievedValue   Float?
+  achievedUnit    String?
+  displayPercent  Int?
+  year            Int
+  sortOrder       Int     @default(0)
+  isDisplayed     Boolean @default(true)
+  updatedById     String?
+  updatedAt       DateTime @updatedAt
+
+  category  PriorityCategory? @relation(fields: [categoryId], references: [id])
+  updatedBy User?             @relation(fields: [updatedById], references: [id])
+
+  @@map("kpis")
+}
+
+model Community {
+  id           String  @id @default(cuid())
+  name         String
+  sourceUrl    String?
+  statValue    String?
+  statLabel    String?
+  statCaption  String?
+  whatIsIt     String?
+  whatItDoes   String?
+  sortOrder    Int     @default(0)
+
+  capabilityValues CommunityCapabilityValue[]
+
+  @@map("communities")
+}
+
+model CommunityCapability {
+  id        String @id @default(cuid())
+  name      String
+  sortOrder Int    @default(0)
+
+  values CommunityCapabilityValue[]
+
+  @@map("community_capabilities")
+}
+
+model CommunityCapabilityValue {
+  id            String @id @default(cuid())
+  communityId   String
+  capabilityId  String
+  value         String // yes | no | partial
+
+  community   Community            @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  capability  CommunityCapability  @relation(fields: [capabilityId], references: [id], onDelete: Cascade)
+
+  @@unique([communityId, capabilityId])
+  @@map("community_capability_values")
+}
+
+model GovernanceItem {
+  id                 String @id @default(cuid())
+  responsibilityTask String
+  responsibleText    String
+  sortOrder          Int    @default(0)
+
+  @@map("governance_items")
+}
+
+model AgendaItem {
+  id        String @id @default(cuid())
+  label     String
+  sortOrder Int    @default(0)
+
+  @@map("agenda_items")
+}
+
+model MeetingObjective {
+  id        String @id @default(cuid())
+  text      String
+  sortOrder Int    @default(0)
+
+  @@map("meeting_objectives")
+}
+
+model GroundRule {
+  id        String @id @default(cuid())
+  text      String
+  sortOrder Int    @default(0)
+
+  @@map("ground_rules")
+}
+
+model AppSetting {
+  key   String @id
+  value String
+
+  @@map("app_settings")
+}
+
+model Person {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@map("people")
+}
+
+model MeetingFile {
+  id           String   @id @default(cuid())
+  title        String
+  originalName String
+  storedName   String
+  mimeType     String
+  sizeBytes    Int
+  sortOrder    Int      @default(0)
+  uploadedById String?
+  createdAt    DateTime @default(now())
+
+  @@map("meeting_files")
+}

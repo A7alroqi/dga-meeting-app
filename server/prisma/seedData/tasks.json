@@ -1,0 +1,683 @@
+[
+  {
+    "title": "تقييم ملف قدرات الابتكار",
+    "categoryCode": "general",
+    "priorityLevel": "medium",
+    "status": "completed",
+    "completionPercent": 100,
+    "latestUpdateNote": "تم مناقشة وتقييم نموذج قدرات الابتكار والخروج بالمرئيات التالية",
+    "dueDateRaw": "11-03-2026",
+    "dueDate": "2026-03-11",
+    "isOngoing": false,
+    "owners": ["أسماء", "أحمد", "سنا"],
+    "milestones": [
+      { "label": "مراجعة نموذج قدرات الابتكار", "isDone": true },
+      { "label": "التقييم واستعراض النتيجة", "isDone": true },
+      { "label": "تحديد العمل بناءا على توجيهات مدير الإدارة", "isDone": true }
+    ]
+  },
+  {
+    "title": "إطلاق الاطار الفرعي للابتكار في الحكومة الرقمية",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "high",
+    "status": "in_progress",
+    "completionPercent": 60,
+    "latestUpdateNote": "عكس الملاحظات على الدراسة بناء على الاجتماع مع التنظيم",
+    "dueDateRaw": "15-06-2026",
+    "dueDate": "2026-06-15",
+    "isOngoing": false,
+    "owners": [
+      "سنا القصاص",
+      "مي الدحيم",
+      "أسماء الهندي"
+    ],
+    "milestones": [
+      {
+        "label": "اعداد الهيكل",
+        "isDone": true
+      },
+      {
+        "label": "اعداد ملف البحث",
+        "isDone": true
+      },
+      {
+        "label": "اعداد ملف الاطار",
+        "isDone": true
+      },
+      {
+        "label": "اعتماد الملف داخليا",
+        "isDone": false
+      },
+      {
+        "label": "اعتماد الملف من الهيئة",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "إعداد محتوى ضوابط ومعايير الحلول الابتكارية",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "low",
+    "status": "in_progress",
+    "completionPercent": 60,
+    "latestUpdateNote": "جاري العمل على قراءة المصادر",
+    "dueDateRaw": "30-08-2026",
+    "dueDate": "2026-08-30",
+    "isOngoing": false,
+    "owners": [
+      "مي الدحيم",
+      "عليا الرشدان"
+    ],
+    "milestones": [
+      {
+        "label": "إعداد الهيكل",
+        "isDone": true
+      },
+      {
+        "label": "حصر المصادر",
+        "isDone": true
+      },
+      {
+        "label": "البدء في ملف البحث",
+        "isDone": true
+      },
+      {
+        "label": "اعتماد الملف داخلياً",
+        "isDone": false
+      },
+      {
+        "label": "اعتماد الملف من الهيئة",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "إعداد الدليل التعريفي للابتكار في الحكومة الرقمية",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "low",
+    "status": "in_progress",
+    "completionPercent": 20,
+    "latestUpdateNote": "جاري العمل على عكس الملاحظات",
+    "dueDateRaw": "يونيو 2026",
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "سنا القصاص",
+      "علياء الرشدان"
+    ],
+    "milestones": [
+      {
+        "label": "اعداد الهيكل",
+        "isDone": true
+      },
+      {
+        "label": "اعداد ملف البحث",
+        "isDone": false
+      },
+      {
+        "label": "اعداد ملف الدليل",
+        "isDone": false
+      },
+      {
+        "label": "اعتماد الملف داخليا",
+        "isDone": false
+      },
+      {
+        "label": "اعتماد الملف من الهيئة",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "تقييم ملف نضج  الابتكار",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "medium",
+    "status": "in_progress",
+    "completionPercent": 14,
+    "latestUpdateNote": "جاري معالجة الملاحظات للمسودة الثالثة",
+    "dueDateRaw": "21-7- 2026",
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "أسماء",
+      "أحمد"
+    ],
+    "milestones": [
+      {
+        "label": "تقييم الملف",
+        "isDone": false
+      },
+      {
+        "label": "الخروج بمرئيات واعتمادها",
+        "isDone": false
+      },
+      {
+        "label": "إعادة هيكلة الملف",
+        "isDone": false
+      },
+      {
+        "label": "البحث في نماذج تقييم النضج",
+        "isDone": false
+      },
+      {
+        "label": "ترتيب الملف بناءً على الركائز",
+        "isDone": false
+      },
+      {
+        "label": "العمل وتغطية الفجوات وفقا للهيكل الجديد",
+        "isDone": true
+      },
+      {
+        "label": "تصميم استبانة التقييم",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "ملف تحليل الجهات في مؤشر قياس التحول الرقمي ( منظور البحث والابتكار )",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "high",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تم الانتهاء من النسخة الأولية للملف | جاري العمل على ملخص تنفيذي",
+    "dueDateRaw": "12-05-2026",
+    "dueDate": "2026-05-12",
+    "isOngoing": false,
+    "owners": [
+      "أسماء",
+      "أحمد"
+    ],
+    "milestones": [
+      {
+        "label": "استخراج النتائج",
+        "isDone": false
+      },
+      {
+        "label": "حساب نسب الالتزام",
+        "isDone": false
+      },
+      {
+        "label": "تحليل النتائج والمقارنة المعيارية بين 2024- 2025 و التوصيات",
+        "isDone": false
+      },
+      {
+        "label": "إعداد التقرير",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "اعداد الدليل الاسترشادي لأنشطة الابتكار",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "high",
+    "status": "in_progress",
+    "completionPercent": 67,
+    "latestUpdateNote": "تم حصر الأدلة والممارسات العالمية ذات الصلة بتفعيل أنشطة الابتكار وإعداد ملف البحث مرجعي لدعم بناء الدليل. بعد ذلك تم تصميم الدليل الاسترشادي والعمل على تطوير محتواه، وقد تم إنجاز نسبة كبيرة منه حتى الآن.",
+    "dueDateRaw": "25-06-2026",
+    "dueDate": "2026-06-25",
+    "isOngoing": false,
+    "owners": [
+      "فيّ"
+    ],
+    "milestones": [
+      {
+        "label": "إجراء بحث أولي (Benchmarking)",
+        "isDone": true
+      },
+      {
+        "label": "اعتماد الهيكل العام للدليل",
+        "isDone": true
+      },
+      {
+        "label": "اعداد ملف البحث",
+        "isDone": true
+      },
+      {
+        "label": "اعداد ملف الدليل",
+        "isDone": true
+      },
+      {
+        "label": "اعتماد الملف داخليا",
+        "isDone": false
+      },
+      {
+        "label": "اعتماد الملف من الهيئة",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "هاكاثون بلدياتاثون",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": null,
+    "dueDateRaw": "28-29-7",
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "فيّأبرار"
+    ],
+    "milestones": [
+      {
+        "label": "المسار الفني:",
+        "isDone": false
+      },
+      {
+        "label": "تأطير التحديات والمسارات",
+        "isDone": false
+      },
+      {
+        "label": "إعداد الأدوات والمنهجيات المساندة لتطوير الحلول",
+        "isDone": false
+      },
+      {
+        "label": "مواءمة التحديات مع الجهات ذات العلاقة لتوسيع فرص تبني",
+        "isDone": false
+      },
+      {
+        "label": "المسار التشغيلي:",
+        "isDone": false
+      },
+      {
+        "label": "متابعة المتطلبات اللوجستية والتنظيمية مع الأطراف المعنية",
+        "isDone": false
+      },
+      {
+        "label": "ارسال الدعواه و الملخص التنفيذي",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "هاكاثون صندوق الاستثمارات العامة Innovate for better",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تمت موائمة التحديات واستيفاء المعايير | تغيير تاريخ اقامة الهاكاثون الى شهر اغسطس",
+    "dueDateRaw": "24-23اغسطس",
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "فيّ"
+    ],
+    "milestones": []
+  },
+  {
+    "title": "مركز الاسناد والتصفية انفاذ",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تم مشاركة المتطلبات",
+    "dueDateRaw": null,
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "فيّ"
+    ],
+    "milestones": []
+  },
+  {
+    "title": "التعاون مع برنامج رحلات الحياة من خلال الابتكار المفتوح",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تمت مشاركة المرئيات وأوجه الدعم وسيتم التنسيق الفترة القادمة",
+    "dueDateRaw": null,
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "فيّ - أحمد"
+    ],
+    "milestones": []
+  },
+  {
+    "title": "تطلبات مؤشري نضج الحكومات الرقمية وتطوير الحكومة الإلكترونية (GTMI & EGDI)",
+    "categoryCode": "gov_reference",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": null,
+    "dueDateRaw": null,
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [],
+    "milestones": []
+  },
+  {
+    "title": "بناء قاعدة بيانات مجتمع الابتكار",
+    "categoryCode": "ecosystem",
+    "priorityLevel": "medium",
+    "status": "in_progress",
+    "completionPercent": 75,
+    "latestUpdateNote": "تم تعديل الاستبيان بما يتوافق مع المتطلبات",
+    "dueDateRaw": "2026-06-30",
+    "dueDate": "2026-06-30",
+    "isOngoing": false,
+    "owners": [
+      "أبرار",
+      "في",
+      "مي"
+    ],
+    "milestones": [
+      {
+        "label": "تفعيل نموذج التسجيل في الدعوات الرسمية",
+        "isDone": true
+      },
+      {
+        "label": "عرض النموذج في القنوات الداخلية (شاشات المبنى)",
+        "isDone": true
+      },
+      {
+        "label": "إطلاق دعوة للتسجيل عبر قنوات التواصل الداخلي",
+        "isDone": true
+      },
+      {
+        "label": "الانتهاء من تصميم الاعلان ونشره خارجياً وداخلياً",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "منظومة الابتكار",
+    "categoryCode": "ecosystem",
+    "priorityLevel": "medium",
+    "status": "in_progress",
+    "completionPercent": 14,
+    "latestUpdateNote": "استعراض واعتماد العرض الموحد، واعتماد قائمة الجهات المستهدفة، والاجتماع مع الإدارة القانونية للبحث عن آلية التعاون المناسبة مع الجهات.",
+    "dueDateRaw": "8 – 6 - 2026",
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "ابرار",
+      "فيّ"
+    ],
+    "milestones": [
+      {
+        "label": "اعداد خطة العمل",
+        "isDone": false
+      },
+      {
+        "label": "تطوير عرض موحد لمنظومة الابتكار",
+        "isDone": true
+      },
+      {
+        "label": "استعراض واعتماد العرض الموحد",
+        "isDone": false
+      },
+      {
+        "label": "اعتماد قائمة الجهات المستهدفة",
+        "isDone": false
+      },
+      {
+        "label": "البحث عن آلية التعاون المناسبة مع الجهات",
+        "isDone": false
+      },
+      {
+        "label": "التواصل والتفعيل",
+        "isDone": false
+      },
+      {
+        "label": "بناء الدليل وتغذيته",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "GovPath",
+    "categoryCode": "ecosystem",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": null,
+    "dueDateRaw": null,
+    "dueDate": null,
+    "isOngoing": false,
+    "owners": [
+      "فيّ"
+    ],
+    "milestones": []
+  },
+  {
+    "title": "تنفيذ دراسة واقع الابتكار في الحكومة الرقمية",
+    "categoryCode": "culture",
+    "priorityLevel": "high",
+    "status": "in_progress",
+    "completionPercent": 38,
+    "latestUpdateNote": "جاري إعادة صياغة البحث | تم فصل الدراسة إلى : | دراسة واقع الابتكار في الحكومة الرقمية | تقرير الاتجاهات العالمية في الابتكار الحكومي",
+    "dueDateRaw": "5-7-2026",
+    "dueDate": "2026-07-05",
+    "isOngoing": false,
+    "owners": [
+      "أسماء الهندي"
+    ],
+    "milestones": [
+      {
+        "label": "مرحلة التخطيط وبناء الهيكل",
+        "isDone": true
+      },
+      {
+        "label": "مرحلة البحث ومراجعة الدراسات السابقة وإعداد الجزء النظري",
+        "isDone": true
+      },
+      {
+        "label": "إعادة تطوير المسودة بناء على الملاحظات",
+        "isDone": true
+      },
+      {
+        "label": "عرضها على الفريق واعتمادها",
+        "isDone": false
+      },
+      {
+        "label": "تسليم المسودة لإدارة الدراسات",
+        "isDone": false
+      },
+      {
+        "label": "التسليم للجنة",
+        "isDone": false
+      },
+      {
+        "label": "تسليم الدراسة لإدارة التسويق",
+        "isDone": false
+      },
+      {
+        "label": "النشر",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "تنفيذ دراسة الابتكار في التشريعات",
+    "categoryCode": "culture",
+    "priorityLevel": "high",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تم إعداد الهيكل الأولي للدراسة والبدء بصياغة المحتوى",
+    "dueDateRaw": "25-06-2026",
+    "dueDate": "2026-06-25",
+    "isOngoing": false,
+    "owners": [
+      "أحمد الروقي"
+    ],
+    "milestones": [
+      {
+        "label": "تم إعداد الهيكل الأولي للدراسة",
+        "isDone": false
+      },
+      {
+        "label": "البدء بصياغة المحتوى",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "تنفيذ ورشة  \"رحلة الابتكار في القطاع الحكومي: من البناء إلى تحقيق الأثر\"",
+    "categoryCode": "culture",
+    "priorityLevel": "high",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تم التواصل مع الجهات الحكومية وبانتظار تأكيدهم على المشاركة في قصص النجاح وتأكيد موعد الزيارة",
+    "dueDateRaw": "28-06-2026",
+    "dueDate": "2026-06-28",
+    "isOngoing": false,
+    "owners": [
+      "في",
+      "مي"
+    ],
+    "milestones": [
+      {
+        "label": "حصر جميع الجهات التي لديها منصات ابتكارية رقمية",
+        "isDone": false
+      },
+      {
+        "label": "المخطط التنفيذي",
+        "isDone": false
+      },
+      {
+        "label": "التواصل مع الخبراء",
+        "isDone": false
+      },
+      {
+        "label": "استلام المحتوى والمراجعة والتنفيذ",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "تنفيذ ورشة \"نحو خلق قيمة ابتكارية في الخدمات الحكومية\"",
+    "categoryCode": "culture",
+    "priorityLevel": "high",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تأكيدهم على المشاركة في قصص النجاح وتأكيد موعد الزيارة",
+    "dueDateRaw": "10-06-2026",
+    "dueDate": "2026-06-10",
+    "isOngoing": false,
+    "owners": [
+      "في",
+      "مي"
+    ],
+    "milestones": [
+      {
+        "label": "الانتهاء من  المخطط التنفيذي",
+        "isDone": false
+      },
+      {
+        "label": "التواصل مع الخبراء",
+        "isDone": false
+      },
+      {
+        "label": "استلام المحتوى",
+        "isDone": false
+      },
+      {
+        "label": "التنفيذ",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "تفعيل knowledge hub",
+    "categoryCode": "culture",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "تم تسجيل نقل المعرفة | معرفة آلية النقل",
+    "dueDateRaw": "مستمر",
+    "dueDate": null,
+    "isOngoing": true,
+    "owners": [
+      "أحمد",
+      "أبرار",
+      "عليا",
+      "مي"
+    ],
+    "milestones": [
+      {
+        "label": "عكس التحديثات الخاصة بالتصميم على الشاشة",
+        "isDone": false
+      },
+      {
+        "label": "عكس المحتويات وتحديثها بعد اصلاح الرخص",
+        "isDone": false
+      },
+      {
+        "label": "تفعيل تطبيق omintapp",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "محتوى توعوي عن الابتكار الحكومي",
+    "categoryCode": "culture",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "-تم الارسال للفريق لأخذ المرئيات",
+    "dueDateRaw": "2026-06-30",
+    "dueDate": "2026-06-30",
+    "isOngoing": false,
+    "owners": [
+      "أسماء سنا",
+      "مي"
+    ],
+    "milestones": [
+      {
+        "label": "اعداد هيكل المحتوى",
+        "isDone": false
+      },
+      {
+        "label": "البحث في الملفات المتوفرة",
+        "isDone": false
+      },
+      {
+        "label": "المراجعة ووضع المرئيات",
+        "isDone": false
+      },
+      {
+        "label": "اعتماد الملف",
+        "isDone": false
+      }
+    ]
+  },
+  {
+    "title": "الاتجاهات العالمية في الابتكار الحكومي",
+    "categoryCode": "culture",
+    "priorityLevel": "medium",
+    "status": "not_started",
+    "completionPercent": 0,
+    "latestUpdateNote": "- جاري البحث",
+    "dueDateRaw": "15-9-2026",
+    "dueDate": "2026-09-15",
+    "isOngoing": false,
+    "owners": [
+      "أسماء"
+    ],
+    "milestones": [
+      {
+        "label": "البحث عن اتجاهات احدث مابين 2024-2026",
+        "isDone": false
+      },
+      {
+        "label": "التعديل على الملف",
+        "isDone": false
+      },
+      {
+        "label": "مشاركته مع الفريق",
+        "isDone": false
+      },
+      {
+        "label": "الاعتماد",
+        "isDone": false
+      },
+      {
+        "label": "التسليم",
+        "isDone": false
+      }
+    ]
+  }
+]
