@@ -11,11 +11,6 @@
       "dest": "server/dist/index.js"
     }
   ],
-  "functions": {
-    "server/dist/index.js": {
-      "runtime": "nodejs20.x"
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   }
