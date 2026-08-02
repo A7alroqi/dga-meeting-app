@@ -1,16 +1,18 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "./build.sh",
-  "outputDirectory": "server/dist",
-  "routes": [
+  "outputDirectory": "public",
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "server/dist/index.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "server/dist/index.js"
+      "source": "/:path((?!api(?:/|$)).*)",
+      "destination": "/index.html"
     }
   ],
+  "functions": {
+    "api/[...path].ts": {
+      "includeFiles": "server/data/**"
+    }
+  },
   "env": {
     "NODE_ENV": "production"
   }

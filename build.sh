@@ -1,9 +1,14 @@
 #!/bin/bash
 set -e
+
 npm run build --workspace=shared
+npm run build --workspace=web
 npm run build --workspace=server
-if [ -d "web/dist" ]; then
-  rm -rf server/dist/public
-  cp -r web/dist server/dist/public
-fi
+
+# Keep the Node deployment self-contained and expose the Vite output in the
+# location Vercel serves as static files.
+rm -rf server/dist/public public
+cp -R web/dist server/dist/public
+cp -R web/dist public
+
 echo "✓ Build complete"

@@ -70,9 +70,9 @@ app.use("/api/capabilities", capabilitiesRouter);
 app.use("/api/people", peopleRouter);
 
 if (isProd) {
-  // In Vercel: web files copied to server/dist/public
-  // Locally: web files are in ../web/dist
-  const webDist = process.env.VERCEL ? path.join(__dirname, "public") : path.join(__dirname, "../../web/dist");
+  // The server compiler emits this file to server/dist/src, while the Vite
+  // build is copied to server/dist/public by build.sh.
+  const webDist = path.join(__dirname, "..", "public");
   app.use(express.static(webDist));
   app.get("*", (_req, res) => {
     res.sendFile(path.join(webDist, "index.html"));
@@ -85,6 +85,12 @@ app.use((err: Error, _req: express.Request, res: express.Response, _next: expres
   res.status(500).json({ error: "حدث خطأ في الخادم" });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-});
+// Vercel imports the Express app as a serverless function. A conventional
+// Node deployment still starts its own HTTP listener.
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server listening on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

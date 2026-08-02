@@ -16,3 +16,4 @@ data/app.db-wal
 uploads/
 .next/
 out/
+/public/
