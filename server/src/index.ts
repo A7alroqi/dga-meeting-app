@@ -70,7 +70,9 @@ app.use("/api/capabilities", capabilitiesRouter);
 app.use("/api/people", peopleRouter);
 
 if (isProd) {
-  const webDist = path.join(__dirname, "../../web/dist");
+  // In Vercel: web files copied to server/dist/public
+  // Locally: web files are in ../web/dist
+  const webDist = process.env.VERCEL ? path.join(__dirname, "public") : path.join(__dirname, "../../web/dist");
   app.use(express.static(webDist));
   app.get("*", (_req, res) => {
     res.sendFile(path.join(webDist, "index.html"));
