@@ -57,12 +57,12 @@ export function usePresenting() {
   return useContext(PresentingContext);
 }
 
-// في وضع العرض، الترتيب: الأجندة → المؤشرات → المهام
+// في وضع العرض، الترتيب: الرئيسية → الأجندة → المؤشرات → المهام
 const NAV_ITEMS = [
+  { to: "/", label: "الرئيسية", icon: HomeRoundedIcon },
   { to: "/agenda", label: "الأجندة", icon: ListAltRoundedIcon },
   { to: "/kpis", label: "مؤشرات الابتكار", icon: InsightsRoundedIcon },
   { to: "/tasks", label: "متابعة المهام", icon: TaskAltRoundedIcon },
-  { to: "/", label: "الرئيسية", icon: HomeRoundedIcon },
   { to: "/challenges", label: "التحديات والدعم المطلوب", icon: ReportProblemRoundedIcon },
   { to: "/files", label: "ملفات العرض", icon: FolderRoundedIcon },
 ];

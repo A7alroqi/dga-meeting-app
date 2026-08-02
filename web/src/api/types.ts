@@ -155,3 +155,12 @@ export interface Challenge {
   supportNeeded: string | null | undefined;
   sortOrder: number;
 }
+
+export interface TaskComment {
+  id: string;
+  taskId: string;
+  userId: string | null;
+  text: string;
+  createdAt: string;
+  user?: { id: string; fullName: string } | null;
+}

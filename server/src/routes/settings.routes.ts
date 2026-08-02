@@ -7,7 +7,7 @@ export const settingsRouter = Router();
 
 settingsRouter.get("/", requireAuth, async (_req, res) => {
   const settings = await prisma.appSetting.findMany();
-  const asObject = Object.fromEntries(settings.map((s) => [s.key, s.value]));
+  const asObject = Object.fromEntries(settings.map((s: { key: string; value: string }) => [s.key, s.value]));
   res.json(asObject);
 });
 
@@ -23,5 +23,5 @@ settingsRouter.patch("/", requireAuth, requireAdmin, async (req, res) => {
     )
   );
   const settings = await prisma.appSetting.findMany();
-  res.json(Object.fromEntries(settings.map((s) => [s.key, s.value])));
+  res.json(Object.fromEntries(settings.map((s: { key: string; value: string }) => [s.key, s.value])));
 });

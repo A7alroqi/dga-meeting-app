@@ -13,6 +13,7 @@ import { settingsRouter } from "./routes/settings.routes";
 import { capabilityMatrixRouter } from "./routes/capabilityMatrix.routes";
 import { meetingsRouter, challengesRouter } from "./routes/meetings.routes";
 import { filesRouter } from "./routes/files.routes";
+import { commentsRouter } from "./routes/comments.routes";
 import {
   categoriesRouter,
   governanceRouter,
@@ -52,6 +53,7 @@ app.use(attachUser);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/tasks", tasksRouter);
+app.use("/api/tasks", commentsRouter);
 app.use("/api/kpis", kpisRouter);
 app.use("/api/settings", settingsRouter);
 app.use("/api/capability-matrix", capabilityMatrixRouter);

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: dga-meeting-app
+    runtime: node
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: SESSION_SECRET
+        value: ${SESSION_SECRET}
+      - key: DATABASE_URL
+        value: file:./data/app.db
+    persistentDirs:
+      - path: /opt/render/project/app/server/data

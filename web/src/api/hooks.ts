@@ -16,6 +16,7 @@ import type {
   Challenge,
   MeetingFile,
   Person,
+  TaskComment,
 } from "./types";
 
 // ---- Categories ----
@@ -375,5 +376,32 @@ export function useDeleteChallenge() {
   return useMutation({
     mutationFn: (id: string) => api.delete(`/challenges/${id}`),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["challenges"] }),
+  });
+}
+
+// ---- Task comments ----
+export function useTaskComments(taskId: string | undefined) {
+  return useQuery({
+    queryKey: ["tasks", taskId, "comments"],
+    queryFn: () => api.get<TaskComment[]>(`/tasks/${taskId}/comments`),
+    enabled: !!taskId,
+  });
+}
+
+export function useCreateComment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ taskId, text }: { taskId: string; text: string }) =>
+      api.post<TaskComment>(`/tasks/${taskId}/comments`, { text }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.taskId, "comments"] }),
+  });
+}
+
+export function useDeleteComment() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ taskId, commentId }: { taskId: string; commentId: string }) =>
+      api.delete(`/tasks/${taskId}/comments/${commentId}`),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.taskId, "comments"] }),
   });
 }

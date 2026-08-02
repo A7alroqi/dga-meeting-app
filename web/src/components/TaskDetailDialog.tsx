@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
+import MessageIcon from "@mui/icons-material/Message";
 import Autocomplete from "@mui/material/Autocomplete";
 import {
   useTask,
@@ -35,6 +36,9 @@ import {
   useRemoveAssignee,
   useCategories,
   usePeople,
+  useTaskComments,
+  useCreateComment,
+  useDeleteComment,
 } from "../api/hooks";
 import { PRIORITY_LEVEL_LABELS_AR, TASK_STATUS_LABELS_AR, type PriorityLevel, type TaskStatus } from "@app/shared";
 import { formatDateAr, formatDateTimeAr } from "../utils/formatDate";
@@ -52,6 +56,7 @@ export function TaskDetailDialog({
   const { data: history } = useTaskHistory(taskId);
   const { data: categories } = useCategories();
   const { data: people } = usePeople();
+  const { data: comments } = useTaskComments(taskId);
   const updateTask = useUpdateTask();
   const deleteTask = useDeleteTask();
   const addMilestone = useAddMilestone();
@@ -59,9 +64,12 @@ export function TaskDetailDialog({
   const deleteMilestone = useDeleteMilestone();
   const addAssignee = useAddAssignee();
   const removeAssignee = useRemoveAssignee();
+  const createComment = useCreateComment();
+  const deleteCommentMutation = useDeleteComment();
 
   const [newMilestone, setNewMilestone] = useState("");
   const [showHistory, setShowHistory] = useState(false);
+  const [newComment, setNewComment] = useState("");
 
   if (!task) return null;
 
@@ -261,6 +269,75 @@ export function TaskDetailDialog({
               </Button>
             </Stack>
           )}
+
+          <Divider />
+          <Stack spacing={1.5}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <MessageIcon fontSize="small" />
+              <Typography variant="subtitle2" fontWeight={600}>
+                الملاحظات ({comments?.length ?? 0})
+              </Typography>
+            </Stack>
+
+            {comments && comments.length > 0 && (
+              <List dense sx={{ bgcolor: "background.paper", borderRadius: 1, border: "1px solid", borderColor: "divider" }}>
+                {comments.map((c) => (
+                  <ListItem
+                    key={c.id}
+                    secondaryAction={
+                      <IconButton
+                        edge="end"
+                        size="small"
+                        onClick={() => deleteCommentMutation.mutate({ taskId, commentId: c.id })}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    }
+                  >
+                    <ListItemText
+                      primary={c.text}
+                      secondary={`${c.user?.fullName ?? "غير معروف"} · ${formatDateTimeAr(c.createdAt)}`}
+                      primaryTypographyProps={{ sx: { wordBreak: "break-word" } }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            )}
+
+            {!comments || comments.length === 0 && (
+              <Typography variant="caption" color="text.secondary" sx={{ fontStyle: "italic" }}>
+                لا توجد ملاحظات بعد
+              </Typography>
+            )}
+
+            {canEdit && (
+              <Stack direction="row" spacing={1}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  placeholder="أضف ملاحظة..."
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  multiline
+                  minRows={2}
+                />
+                <Button
+                  variant="contained"
+                  size="small"
+                  disabled={!newComment.trim()}
+                  onClick={() => {
+                    createComment.mutate(
+                      { taskId, text: newComment.trim() },
+                      { onSuccess: () => setNewComment("") }
+                    );
+                  }}
+                  sx={{ alignSelf: "flex-end" }}
+                >
+                  إضافة
+                </Button>
+              </Stack>
+            )}
+          </Stack>
 
           <Divider />
           <Button size="small" onClick={() => setShowHistory((s) => !s)}>
