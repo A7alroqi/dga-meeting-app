@@ -53,9 +53,16 @@ tasksRouter.post("/", requireAuth, requireEmployeeOrAdmin, async (req: AuthedReq
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message ?? "بيانات غير صحيحة" });
   }
-  const { dueDate, ...rest } = parsed.data;
+  const { dueDate, assignees, milestones, ...rest } = parsed.data;
   const task = await taskService.createTask(
-    { ...rest, dueDate: dueDate ? new Date(dueDate) : null },
+    {
+      ...rest,
+      dueDate: dueDate ? new Date(dueDate) : null,
+      // Zod validates these fields at runtime. The explicit mapping also
+      // preserves their required shape under TypeScript 5.9's inference.
+      assignees: assignees?.map(({ userId, displayName }) => ({ userId, displayName: displayName! })),
+      milestones: milestones?.map(({ label, isDone, sortOrder }) => ({ label: label!, isDone, sortOrder })),
+    },
     req.user!.id
   );
   res.status(201).json(task);
@@ -157,7 +164,11 @@ tasksRouter.post(
   async (req: AuthedRequest, res) => {
     const parsed = assigneeSchema.safeParse(req.body);
     if (!parsed.success) return res.status(400).json({ error: "بيانات غير صحيحة" });
-    const assignee = await taskService.addAssignee(req.params.id, parsed.data, req.user!.id);
+    const assignee = await taskService.addAssignee(
+      req.params.id,
+      { userId: parsed.data.userId, displayName: parsed.data.displayName! },
+      req.user!.id
+    );
     res.status(201).json(assignee);
   }
 );
