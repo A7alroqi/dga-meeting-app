@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../db";
 import { requireAuth, requireAdmin, type AuthedRequest } from "../middleware/auth";
 
@@ -34,9 +35,21 @@ kpisRouter.post("/", requireAuth, requireAdmin, async (req: AuthedRequest, res) 
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message ?? "بيانات غير صحيحة" });
   }
-  const created = await prisma.kpi.create({
-    data: { ...parsed.data, updatedById: req.user!.id },
-  });
+  const data = {
+    categoryId: parsed.data.categoryId ?? null,
+    kpiType: parsed.data.kpiType ?? "operational",
+    name: parsed.data.name!,
+    targetValue: parsed.data.targetValue ?? null,
+    targetUnit: parsed.data.targetUnit ?? null,
+    achievedValue: parsed.data.achievedValue ?? null,
+    achievedUnit: parsed.data.achievedUnit ?? null,
+    displayPercent: parsed.data.displayPercent ?? null,
+    year: parsed.data.year!,
+    sortOrder: parsed.data.sortOrder ?? 0,
+    isDisplayed: parsed.data.isDisplayed ?? true,
+    updatedById: req.user!.id,
+  } satisfies Prisma.KpiUncheckedCreateInput;
+  const created = await prisma.kpi.create({ data });
   res.status(201).json(created);
 });
 

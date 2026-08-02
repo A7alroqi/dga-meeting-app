@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../db";
 import { requireAuth, requireEmployeeOrAdmin, type AuthedRequest } from "../middleware/auth";
 
@@ -49,9 +50,14 @@ meetingsRouter.post(
   async (req: AuthedRequest, res) => {
     const parsed = challengeSchema.safeParse(req.body);
     if (!parsed.success) return res.status(400).json({ error: "بيانات غير صحيحة" });
-    const challenge = await prisma.challenge.create({
-      data: { ...parsed.data, meetingId: req.params.id, createdById: req.user!.id },
-    });
+    const data = {
+      meetingId: req.params.id,
+      description: parsed.data.description!,
+      supportNeeded: parsed.data.supportNeeded ?? null,
+      sortOrder: parsed.data.sortOrder ?? 0,
+      createdById: req.user!.id,
+    } satisfies Prisma.ChallengeUncheckedCreateInput;
+    const challenge = await prisma.challenge.create({ data });
     res.status(201).json(challenge);
   }
 );
