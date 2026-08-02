@@ -3,6 +3,7 @@ set -e
 
 npm run build --workspace=shared
 npm run build --workspace=web
+npm run prisma:generate --workspace=server
 npm run build --workspace=server
 
 # Keep the Node deployment self-contained and expose the Vite output in the
