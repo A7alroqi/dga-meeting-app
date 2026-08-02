@@ -1,0 +1,22 @@
+{
+  "buildCommand": "npm run build --workspace=shared && npm run build --workspace=server && node -e \"const fs=require('fs');const path=require('path');const src='web/dist';const dst='server/dist/public';if(fs.existsSync(src)){fs.rmSync(dst,{recursive:true,force:true});fs.cpSync(src,dst,{recursive:true})}\"",
+  "outputDirectory": "server/dist",
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/dist/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "server/dist/index.js"
+    }
+  ],
+  "functions": {
+    "server/dist/index.js": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
