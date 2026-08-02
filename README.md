@@ -1,1 +1,1 @@
-# DGA Meeting App - Online!
+# DGA Meeting App - Online and Ready!
