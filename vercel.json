@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build --workspace=shared && npm run build --workspace=server && node -e \"const fs=require('fs');const path=require('path');const src='web/dist';const dst='server/dist/public';if(fs.existsSync(src)){fs.rmSync(dst,{recursive:true,force:true});fs.cpSync(src,dst,{recursive:true})}\"",
+  "buildCommand": "./build.sh",
   "outputDirectory": "server/dist",
   "routes": [
     {
