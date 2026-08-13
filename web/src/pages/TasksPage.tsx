@@ -39,6 +39,7 @@ function TaskCard({ task, onClick, canMarkComplete }: { task: Task; onClick: () 
   const doneMilestones = task.milestones.filter((m) => m.isDone).length;
   const updateTask = useUpdateTask();
   const isCompleted = task.status === "completed";
+  const completionPercent = Math.min(100, task.completionPercent);
 
   const handleCompleteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -74,102 +75,129 @@ function TaskCard({ task, onClick, canMarkComplete }: { task: Task; onClick: () 
     });
   };
 
+  const getProgressColor = () => {
+    if (completionPercent >= 100) return "#4CAF50";
+    if (completionPercent >= 75) return "#1AC082";
+    if (completionPercent >= 50) return "#FF9800";
+    if (completionPercent >= 25) return "#FFC107";
+    return "#F44336";
+  };
+
   return (
     <Paper
       variant="outlined"
       sx={{
-        p: 2,
         cursor: "pointer",
-        "&:hover": { boxShadow: 2 },
-        border: isCompleted ? "2px solid #4CAF50" : undefined
+        "&:hover": { boxShadow: 3 },
+        border: isCompleted ? "2px solid #4CAF50" : "1px solid #ddd",
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "row",
+        height: "100%"
       }}
       onClick={onClick}
     >
-      <Stack direction="row" justifyContent="space-between" alignItems="flex-start" spacing={1}>
-        <Typography
-          variant="subtitle1"
-          fontWeight={700}
-          sx={{
-            flex: 1,
-            wordBreak: "break-word",
-            overflowWrap: "break-word",
-            hyphens: "auto",
-            textDecoration: isCompleted ? "line-through" : "none",
-            color: isCompleted ? "text.secondary" : "inherit"
-          }}
-        >
-          {cleanLongText(task.title)}
-        </Typography>
-        <Stack direction="row" spacing={0.5}>
-          {canMarkComplete && !isCompleted && (
-            <IconButton
-              size="small"
-              onClick={handleCompleteClick}
-              sx={{
-                color: "success.main",
-                "&:hover": { bgcolor: "success.lighter" }
-              }}
-              title="إنهاء المهمة"
-            >
-              <CheckCircleIcon fontSize="small" />
-            </IconButton>
-          )}
-          {canMarkComplete && isCompleted && (
-            <>
-              <IconButton
-                size="small"
-                onClick={handleArchiveClick}
-                sx={{
-                  color: "info.main",
-                  "&:hover": { bgcolor: "info.lighter" }
-                }}
-                title="إخفاء المهمة"
-              >
-                <ArchiveIcon fontSize="small" />
-              </IconButton>
-              <IconButton
-                size="small"
-                onClick={handleUndoClick}
-                sx={{
-                  color: "warning.main",
-                  "&:hover": { bgcolor: "warning.lighter" }
-                }}
-                title="إرجاع المهمة"
-              >
-                <UndoIcon fontSize="small" />
-              </IconButton>
-            </>
-          )}
-          <Chip size="small" label={PRIORITY_LEVEL_LABELS_AR[task.priorityLevel]} color={PRIORITY_COLORS[task.priorityLevel]} />
-        </Stack>
-      </Stack>
-      <Stack direction="row" spacing={1} sx={{ mt: 1 }} flexWrap="wrap">
-        <Chip size="small" variant="outlined" label={TASK_STATUS_LABELS_AR[task.status]} />
-        {task.category && <Chip size="small" variant="outlined" label={task.category.nameAr} />}
-        {task.milestones.length > 0 && (
-          <Chip size="small" variant="outlined" label={`معالم: ${doneMilestones}/${task.milestones.length}`} />
-        )}
-      </Stack>
-      <Box sx={{ mt: 1.5 }}>
-        <LinearProgress
-          variant="determinate"
-          value={Math.min(100, task.completionPercent)}
-          sx={{ height: 6, borderRadius: 3 }}
-        />
-        <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.5 }}>
-          <Typography variant="caption" color="text.secondary">
-            {task.completionPercent}%
+      {/* Left: Large Progress Visual */}
+      <Box
+        sx={{
+          width: 80,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          bgcolor: getProgressColor(),
+          color: "white",
+          position: "relative",
+          flexShrink: 0
+        }}
+      >
+        <Stack alignItems="center" spacing={0.5}>
+          <Typography variant="h5" fontWeight={700}>
+            {completionPercent}%
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant="caption" sx={{ fontSize: "0.65rem", opacity: 0.9 }}>
+            مكتمل
+          </Typography>
+        </Stack>
+      </Box>
+
+      {/* Right: Task Details */}
+      <Box sx={{ p: 2, flex: 1, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        {/* Title + Actions */}
+        <Stack direction="row" justifyContent="space-between" spacing={1}>
+          <Typography
+            variant="subtitle2"
+            fontWeight={600}
+            sx={{
+              flex: 1,
+              wordBreak: "break-word",
+              overflowWrap: "break-word",
+              textDecoration: isCompleted ? "line-through" : "none",
+              color: isCompleted ? "text.secondary" : "inherit",
+              lineHeight: 1.3
+            }}
+          >
+            {cleanLongText(task.title)}
+          </Typography>
+          <Stack direction="row" spacing={0.25} flexShrink={0}>
+            {canMarkComplete && !isCompleted && (
+              <IconButton
+                size="small"
+                onClick={handleCompleteClick}
+                sx={{ color: "success.main" }}
+                title="إنهاء المهمة"
+              >
+                <CheckCircleIcon fontSize="small" />
+              </IconButton>
+            )}
+            {canMarkComplete && isCompleted && (
+              <>
+                <IconButton
+                  size="small"
+                  onClick={handleArchiveClick}
+                  sx={{ color: "info.main" }}
+                  title="إخفاء المهمة"
+                >
+                  <ArchiveIcon fontSize="small" />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={handleUndoClick}
+                  sx={{ color: "warning.main" }}
+                  title="إرجاع المهمة"
+                >
+                  <UndoIcon fontSize="small" />
+                </IconButton>
+              </>
+            )}
+          </Stack>
+        </Stack>
+
+        {/* Status Row */}
+        <Stack direction="row" spacing={0.5} sx={{ mt: 1 }} flexWrap="wrap">
+          <Chip size="small" variant="filled" label={TASK_STATUS_LABELS_AR[task.status]} sx={{ height: 24 }} />
+          <Chip size="small" label={PRIORITY_LEVEL_LABELS_AR[task.priorityLevel]} color={PRIORITY_COLORS[task.priorityLevel]} sx={{ height: 24 }} />
+          {task.category && <Chip size="small" variant="outlined" label={task.category.nameAr} sx={{ height: 24 }} />}
+        </Stack>
+
+        {/* Details Footer */}
+        <Stack direction="row" justifyContent="space-between" sx={{ mt: 1 }}>
+          <Stack direction="row" spacing={1} flexWrap="wrap">
+            {task.milestones.length > 0 && (
+              <Typography variant="caption" color="text.secondary">
+                معالم: {doneMilestones}/{task.milestones.length}
+              </Typography>
+            )}
+            {task.assignees.length > 0 && (
+              <Typography variant="caption" color="text.secondary">
+                {task.assignees.map((a) => a.displayName).join("، ")}
+              </Typography>
+            )}
+          </Stack>
+          <Typography variant="caption" color="text.secondary" sx={{ flexShrink: 0 }}>
             {task.isOngoing ? "مستمر" : task.dueDate ? formatDateAr(task.dueDate) : task.dueDateRaw ?? ""}
           </Typography>
         </Stack>
       </Box>
-      {task.assignees.length > 0 && (
-        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 1 }}>
-          {task.assignees.map((a) => a.displayName).join("، ")}
-        </Typography>
-      )}
     </Paper>
   );
 }
