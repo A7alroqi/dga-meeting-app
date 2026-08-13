@@ -8,10 +8,24 @@ import { prisma } from "../db";
 import { requireAuth, requireEmployeeOrAdmin, type AuthedRequest } from "../middleware/auth";
 
 const UPLOADS_DIR = path.join(__dirname, "../../data/uploads");
-try {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-} catch {
-  // Ephemeral filesystem (Vercel) — ignore
+let storage: any;
+
+if (process.env.VERCEL) {
+  // Vercel has ephemeral filesystem — use memory storage as fallback
+  storage = multer.memoryStorage();
+} else {
+  try {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+  } catch {
+    // ignore
+  }
+  storage = multer.diskStorage({
+    destination: UPLOADS_DIR,
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      cb(null, `${crypto.randomUUID()}${ext}`);
+    },
+  });
 }
 
 const ALLOWED_EXTENSIONS = new Set([
@@ -28,14 +42,6 @@ const ALLOWED_EXTENSIONS = new Set([
 ]);
 
 const MAX_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
-
-const storage = multer.diskStorage({
-  destination: UPLOADS_DIR,
-  filename: (_req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `${crypto.randomUUID()}${ext}`);
-  },
-});
 
 const upload = multer({
   storage,
