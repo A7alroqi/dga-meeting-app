@@ -20,13 +20,7 @@ import { usePresenting } from "../components/AppLayout";
 import { useKpis, useUpdateKpi } from "../api/hooks";
 import type { Kpi } from "../api/types";
 import { cleanLongText } from "../utils/textUtils";
-
-function getPerformanceColor(percent: number): { bg: string; label: string } {
-  if (percent >= 75) return { bg: "#1AC082", label: "ممتاز" }; // Dark Green
-  if (percent >= 50) return { bg: "#4CAF50", label: "جيد" }; // Green
-  if (percent >= 25) return { bg: "#FF9800", label: "متوسط" }; // Orange
-  return { bg: "#F44336", label: "ضعيف" }; // Red
-}
+import { getPerformanceColor, getKpiPercent } from "../utils/kpi";
 
 function KpiCard({ kpi, canEdit }: { kpi: Kpi; canEdit: boolean }) {
   const updateMutation = useUpdateKpi();
@@ -35,8 +29,7 @@ function KpiCard({ kpi, canEdit }: { kpi: Kpi; canEdit: boolean }) {
   const [achieved, setAchieved] = useState(kpi.achievedValue?.toString() ?? "");
 
   const hasValues = kpi.targetValue !== null && kpi.achievedValue !== null;
-  const percent =
-    hasValues && kpi.targetValue ? Math.min(100, Math.round(((kpi.achievedValue ?? 0) / kpi.targetValue) * 100)) : 0;
+  const percent = hasValues ? getKpiPercent(kpi) : 0;
   const performance = getPerformanceColor(percent);
 
   return (

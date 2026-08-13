@@ -18,11 +18,17 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  DialogContentText,
   DialogActions,
+  IconButton,
+  Tooltip,
 } from "@mui/material";
-import { useUsers, useCreateUser, useUpdateUser } from "../../api/hooks";
+import DeleteRoundedIcon from "@mui/icons-material/DeleteRounded";
+import { useUsers, useCreateUser, useUpdateUser, useDeleteUser } from "../../api/hooks";
 import { ROLES, ROLE_LABELS_AR, type Role } from "@app/shared";
 import { formatDateAr } from "../../utils/formatDate";
+import { useAuth } from "../../AuthContext";
+import { ApiError } from "../../api/client";
 
 function CreateUserDialog({ onClose }: { onClose: () => void }) {
   const createUser = useCreateUser();
@@ -80,10 +86,55 @@ function CreateUserDialog({ onClose }: { onClose: () => void }) {
   );
 }
 
+function DeleteUserDialog({
+  user,
+  onClose,
+}: {
+  user: { id: string; fullName: string; email: string };
+  onClose: () => void;
+}) {
+  const deleteUser = useDeleteUser();
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>حذف المستخدم</DialogTitle>
+      <DialogContent>
+        <DialogContentText>
+          هل أنت متأكد من حذف "{user.fullName}" ({user.email})؟ هذا الإجراء لا يمكن التراجع عنه.
+        </DialogContentText>
+        {error && (
+          <Typography color="error" variant="body2" sx={{ mt: 2 }}>
+            {error}
+          </Typography>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>إلغاء</Button>
+        <Button
+          color="error"
+          variant="contained"
+          onClick={() => {
+            setError(null);
+            deleteUser.mutate(user.id, {
+              onSuccess: onClose,
+              onError: (err) => setError(err instanceof ApiError ? err.message : "حدث خطأ"),
+            });
+          }}
+        >
+          حذف
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 export function AdminUsersPage() {
   const { data: users } = useUsers();
+  const { user: currentUser } = useAuth();
   const updateUser = useUpdateUser();
   const [creating, setCreating] = useState(false);
+  const [deletingUser, setDeletingUser] = useState<{ id: string; fullName: string; email: string } | null>(null);
 
   return (
     <Box>
@@ -104,6 +155,7 @@ export function AdminUsersPage() {
               <TableCell>الدور</TableCell>
               <TableCell>مفعّل</TableCell>
               <TableCell>آخر دخول</TableCell>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -133,12 +185,27 @@ export function AdminUsersPage() {
                 <TableCell>
                   {u.lastLoginAt ? formatDateAr(u.lastLoginAt) : <Chip size="small" label="لم يسجل الدخول بعد" />}
                 </TableCell>
+                <TableCell align="center">
+                  <Tooltip title={u.id === currentUser?.id ? "لا يمكنك حذف حسابك الخاص" : "حذف المستخدم"}>
+                    <span>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        disabled={u.id === currentUser?.id}
+                        onClick={() => setDeletingUser({ id: u.id, fullName: u.fullName, email: u.email })}
+                      >
+                        <DeleteRoundedIcon fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </Paper>
       {creating && <CreateUserDialog onClose={() => setCreating(false)} />}
+      {deletingUser && <DeleteUserDialog user={deletingUser} onClose={() => setDeletingUser(null)} />}
     </Box>
   );
 }

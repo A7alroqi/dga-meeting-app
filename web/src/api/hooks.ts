@@ -14,6 +14,7 @@ import type {
   AppUser,
   Meeting,
   Challenge,
+  ActionPoint,
   MeetingFile,
   Person,
   TaskComment,
@@ -275,6 +276,21 @@ export function useUpdateUser() {
   });
 }
 
+export function useDeleteUser() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.delete(`/users/${id}`),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["users"] }),
+  });
+}
+
+export function useChangeMyPassword() {
+  return useMutation({
+    mutationFn: (data: { currentPassword: string; newPassword: string }) =>
+      api.post("/users/me/password", data),
+  });
+}
+
 // ---- Meetings & challenges ----
 export function useMeetings() {
   return useQuery({ queryKey: ["meetings"], queryFn: () => api.get<Meeting[]>("/meetings") });
@@ -307,6 +323,47 @@ export function useCreateChallenge() {
       data: { description: string; supportNeeded?: string };
     }) => api.post<Challenge>(`/meetings/${meetingId}/challenges`, data),
     onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["challenges", vars.meetingId] }),
+  });
+}
+
+export function useActionPoints(meetingId: string | undefined) {
+  return useQuery({
+    queryKey: ["action-points", meetingId],
+    queryFn: () => api.get<ActionPoint[]>(`/meetings/${meetingId}/action-points`),
+    enabled: !!meetingId,
+  });
+}
+
+export function useCreateActionPoint() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ meetingId, text }: { meetingId: string; text: string }) =>
+      api.post<ActionPoint>(`/meetings/${meetingId}/action-points`, { text }),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["action-points", vars.meetingId] }),
+  });
+}
+
+export function useUpdateActionPoint() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      meetingId,
+      data,
+    }: {
+      id: string;
+      meetingId: string;
+      data: Partial<Pick<ActionPoint, "text" | "isDone">>;
+    }) => api.patch<ActionPoint>(`/action-points/${id}`, data),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["action-points", vars.meetingId] }),
+  });
+}
+
+export function useDeleteActionPoint() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id }: { id: string; meetingId: string }) => api.delete(`/action-points/${id}`),
+    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["action-points", vars.meetingId] }),
   });
 }
 

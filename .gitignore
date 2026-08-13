@@ -10,10 +10,14 @@ build/
 .vscode/
 *.swp
 *.swo
-data/app.db
-data/app.db-shm
-data/app.db-wal
+server/data/app.db
+server/data/app.db-shm
+server/data/app.db-wal
+server/data/sessions.sqlite
 uploads/
+server/prisma/data-export.json
 .next/
 out/
 /public/
+.vercel
+.env*

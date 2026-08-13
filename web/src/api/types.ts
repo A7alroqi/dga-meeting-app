@@ -156,6 +156,15 @@ export interface Challenge {
   sortOrder: number;
 }
 
+export interface ActionPoint {
+  id: string;
+  meetingId: string;
+  text: string;
+  isDone: boolean;
+  sortOrder: number;
+  createdAt: string;
+}
+
 export interface TaskComment {
   id: string;
   taskId: string;

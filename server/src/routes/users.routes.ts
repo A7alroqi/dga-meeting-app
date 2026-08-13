@@ -74,6 +74,24 @@ usersRouter.patch("/:id", requireAuth, requireAdmin, async (req, res) => {
   res.json(serializeUser(user));
 });
 
+usersRouter.delete("/:id", requireAuth, requireAdmin, async (req: AuthedRequest, res) => {
+  if (req.params.id === req.user!.id) {
+    return res.status(400).json({ error: "لا يمكنك حذف حسابك الخاص" });
+  }
+  const target = await prisma.user.findUnique({ where: { id: req.params.id } });
+  if (!target) {
+    return res.status(404).json({ error: "المستخدم غير موجود" });
+  }
+  if (target.role === "admin") {
+    const otherAdmins = await prisma.user.count({ where: { role: "admin", id: { not: target.id } } });
+    if (otherAdmins === 0) {
+      return res.status(400).json({ error: "لا يمكن حذف آخر مدير في النظام" });
+    }
+  }
+  await prisma.user.delete({ where: { id: target.id } });
+  res.status(204).end();
+});
+
 usersRouter.post("/:id/reset-password", requireAuth, requireAdmin, async (req, res) => {
   const schema = z.object({ password: z.string().min(8) });
   const parsed = schema.safeParse(req.body);

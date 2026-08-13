@@ -17,6 +17,12 @@ import {
   Avatar,
   Paper,
   Fade,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Stack,
 } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -32,9 +38,11 @@ import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
+import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
 import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import LockResetRoundedIcon from "@mui/icons-material/LockResetRounded";
 import SlideshowRoundedIcon from "@mui/icons-material/SlideshowRounded";
 import CloseFullscreenRoundedIcon from "@mui/icons-material/CloseFullscreenRounded";
 import NavigateBeforeRoundedIcon from "@mui/icons-material/NavigateBeforeRounded";
@@ -44,6 +52,8 @@ import { ROLE_LABELS_AR } from "@app/shared";
 import { isAdmin } from "./RoleGuard";
 import { DGA } from "../theme/rtlTheme";
 import { removeTatweel } from "../utils/textUtils";
+import { useChangeMyPassword } from "../api/hooks";
+import { ApiError } from "../api/client";
 
 dayjs.locale("ar");
 
@@ -64,6 +74,7 @@ const NAV_ITEMS = [
   { to: "/kpis", label: "مؤشرات الابتكار", icon: InsightsRoundedIcon },
   { to: "/tasks", label: "متابعة المهام", icon: TaskAltRoundedIcon },
   { to: "/challenges", label: "التحديات والدعم المطلوب", icon: ReportProblemRoundedIcon },
+  { to: "/minutes", label: "محضر الاجتماع", icon: FactCheckRoundedIcon },
   { to: "/files", label: "ملفات العرض", icon: FolderRoundedIcon },
 ];
 
@@ -231,11 +242,75 @@ function PresentationControls({ onExit }: { onExit: () => void }) {
   );
 }
 
+function ChangePasswordDialog({ onClose }: { onClose: () => void }) {
+  const changePassword = useChangeMyPassword();
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  function submit() {
+    setError(null);
+    if (newPassword !== confirmPassword) {
+      setError("كلمتا المرور الجديدتان غير متطابقتين");
+      return;
+    }
+    changePassword.mutate(
+      { currentPassword, newPassword },
+      { onSuccess: onClose, onError: (err) => setError(err instanceof ApiError ? err.message : "حدث خطأ") }
+    );
+  }
+
+  return (
+    <Dialog open onClose={onClose} maxWidth="xs" fullWidth>
+      <DialogTitle>تغيير كلمة المرور</DialogTitle>
+      <DialogContent>
+        <Stack spacing={2} sx={{ mt: 1 }}>
+          <TextField
+            label="كلمة المرور الحالية"
+            type="password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            fullWidth
+          />
+          <TextField
+            label="كلمة المرور الجديدة"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            fullWidth
+            helperText="8 أحرف على الأقل"
+          />
+          <TextField
+            label="تأكيد كلمة المرور الجديدة"
+            type="password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            fullWidth
+          />
+          {error && (
+            <Typography color="error" variant="body2">
+              {error}
+            </Typography>
+          )}
+        </Stack>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose}>إلغاء</Button>
+        <Button variant="contained" onClick={submit} disabled={!currentPassword || newPassword.length < 8}>
+          حفظ
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
+
 export function AppLayout({ children }: { children: ReactNode }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem(SIDEBAR_STATE_KEY) === "1");
   const [presenting, setPresenting] = useState(false);
+  const [changingPassword, setChangingPassword] = useState(false);
 
   function toggleCollapsed() {
     setCollapsed((prev) => {
@@ -354,6 +429,11 @@ export function AppLayout({ children }: { children: ReactNode }) {
                   label={`${user.fullName} · ${ROLE_LABELS_AR[user.role]}`}
                   sx={{ color: "#fff", bgcolor: DGA.teal, display: { xs: "none", md: "flex" } }}
                 />
+                <Tooltip title="تغيير كلمة المرور">
+                  <IconButton color="inherit" onClick={() => setChangingPassword(true)}>
+                    <LockResetRoundedIcon />
+                  </IconButton>
+                </Tooltip>
                 <Tooltip title="تسجيل الخروج">
                   <Button
                     color="inherit"
@@ -420,6 +500,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
           {children}
         </Box>
       </Box>
+      {changingPassword && <ChangePasswordDialog onClose={() => setChangingPassword(false)} />}
     </PresentingContext.Provider>
   );
 }

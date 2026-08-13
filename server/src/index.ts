@@ -1,9 +1,10 @@
 import path from "node:path";
+import "dotenv/config";
 import "express-async-errors";
 import express from "express";
 import session from "express-session";
-import SQLiteStoreFactory from "connect-sqlite3";
-import sqlite3 from "sqlite3";
+import pgSessionFactory from "connect-pg-simple";
+import { Pool } from "pg";
 import { attachUser } from "./middleware/auth";
 import { authRouter } from "./routes/auth.routes";
 import { usersRouter } from "./routes/users.routes";
@@ -11,7 +12,7 @@ import { tasksRouter } from "./routes/tasks.routes";
 import { kpisRouter } from "./routes/kpis.routes";
 import { settingsRouter } from "./routes/settings.routes";
 import { capabilityMatrixRouter } from "./routes/capabilityMatrix.routes";
-import { meetingsRouter, challengesRouter } from "./routes/meetings.routes";
+import { meetingsRouter, challengesRouter, actionPointsRouter } from "./routes/meetings.routes";
 import { filesRouter } from "./routes/files.routes";
 import { commentsRouter } from "./routes/comments.routes";
 import {
@@ -29,14 +30,14 @@ const app = express();
 const PORT = Number(process.env.PORT ?? 3001);
 const isProd = process.env.NODE_ENV === "production";
 
-const SQLiteStore = SQLiteStoreFactory(session);
-const sessionDb = new sqlite3.Database(path.join(__dirname, "../data/sessions.sqlite"));
+const PgSession = pgSessionFactory(session);
+const sessionPool = new Pool({ connectionString: process.env.DATABASE_URL });
 
 app.use(express.json());
 app.set("trust proxy", 1);
 app.use(
   session({
-    store: new SQLiteStore({ db: sessionDb, table: "sessions" }),
+    store: new PgSession({ pool: sessionPool, tableName: "sessions", createTableIfMissing: true }),
     secret: process.env.SESSION_SECRET ?? "dev-only-change-me",
     resave: false,
     saveUninitialized: false,
@@ -60,6 +61,7 @@ app.use("/api/capability-matrix", capabilityMatrixRouter);
 app.use("/api/meetings", meetingsRouter);
 app.use("/api/files", filesRouter);
 app.use("/api/challenges", challengesRouter);
+app.use("/api/action-points", actionPointsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/governance-items", governanceRouter);
 app.use("/api/agenda-items", agendaRouter);

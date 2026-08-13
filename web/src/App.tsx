@@ -9,6 +9,7 @@ import { ObjectivesPage } from "./pages/ObjectivesPage";
 import { KpiDashboardPage } from "./pages/KpiDashboardPage";
 import { TasksPage } from "./pages/TasksPage";
 import { ChallengesPage } from "./pages/ChallengesPage";
+import { MinutesPage } from "./pages/MinutesPage";
 import { FilesPage } from "./pages/FilesPage";
 import { FileViewerPage } from "./pages/FileViewerPage";
 import { AdminUsersPage } from "./pages/admin/AdminUsersPage";
@@ -33,6 +34,7 @@ export default function App() {
                 <Route path="/kpis" element={<KpiDashboardPage />} />
                 <Route path="/tasks" element={<TasksPage />} />
                 <Route path="/challenges" element={<ChallengesPage />} />
+                <Route path="/minutes" element={<MinutesPage />} />
                 <Route path="/files" element={<FilesPage />} />
                 <Route path="/files/:id" element={<FileViewerPage />} />
                 <Route

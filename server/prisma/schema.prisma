@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -25,6 +26,7 @@ model User {
   taskComments     TaskComment[]
   meetings         Meeting[]
   challenges       Challenge[]
+  actionPoints     ActionPoint[]
   kpiUpdates       Kpi[]
 
   @@map("users")
@@ -62,8 +64,8 @@ model Task {
   updatedAt          DateTime  @updatedAt
 
   category   PriorityCategory? @relation(fields: [categoryId], references: [id])
-  createdBy  User?             @relation("TaskCreatedBy", fields: [createdById], references: [id])
-  updatedBy  User?             @relation("TaskUpdatedBy", fields: [updatedById], references: [id])
+  createdBy  User?             @relation("TaskCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy  User?             @relation("TaskUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
   assignees  TaskAssignee[]
   milestones TaskMilestone[]
   history    TaskHistory[]
@@ -79,7 +81,7 @@ model TaskAssignee {
   displayName String
 
   task Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@map("task_assignees")
 }
@@ -107,7 +109,7 @@ model TaskHistory {
   note        String?
 
   task      Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  changedBy User? @relation(fields: [changedById], references: [id])
+  changedBy User? @relation(fields: [changedById], references: [id], onDelete: SetNull)
 
   @@map("task_history")
 }
@@ -119,7 +121,7 @@ model TaskComment {
   text      String
   createdAt DateTime @default(now())
 
-  user User?  @relation(fields: [userId], references: [id])
+  user User?  @relation(fields: [userId], references: [id], onDelete: SetNull)
   task Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
   @@map("task_comments")
@@ -132,8 +134,9 @@ model Meeting {
   createdById  String?
   createdAt    DateTime @default(now())
 
-  createdBy  User?       @relation(fields: [createdById], references: [id])
-  challenges Challenge[]
+  createdBy    User?         @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  challenges   Challenge[]
+  actionPoints ActionPoint[]
 
   @@map("meetings")
 }
@@ -148,9 +151,24 @@ model Challenge {
   createdAt      DateTime @default(now())
 
   meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
-  createdBy User?   @relation(fields: [createdById], references: [id])
+  createdBy User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
 
   @@map("challenges")
+}
+
+model ActionPoint {
+  id          String   @id @default(cuid())
+  meetingId   String
+  text        String
+  isDone      Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  meeting   Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  createdBy User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@map("action_points")
 }
 
 model Kpi {
@@ -170,7 +188,7 @@ model Kpi {
   updatedAt       DateTime @updatedAt
 
   category  PriorityCategory? @relation(fields: [categoryId], references: [id])
-  updatedBy User?             @relation(fields: [updatedById], references: [id])
+  updatedBy User?             @relation(fields: [updatedById], references: [id], onDelete: SetNull)
 
   @@map("kpis")
 }
