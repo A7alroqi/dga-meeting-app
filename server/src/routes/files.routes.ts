@@ -58,30 +58,32 @@ filesRouter.post(
   "/",
   requireAuth,
   requireEmployeeOrAdmin,
-  async (req, res) => {
+  (req: AuthedRequest, res, next) => {
     if (process.env.VERCEL) {
       return res.status(503).json({ error: "رفع الملفات غير مدعوم في هذا الإصدار" });
     }
-    upload.single("file")(req, res, async (err) => {
+    upload.single("file")(req, res, (err) => {
       if (err) return res.status(400).json({ error: err.message ?? "فشل رفع الملف" });
-      if (!req.file) return res.status(400).json({ error: "لم يتم إرفاق ملف" });
-      // multer decodes multipart filenames as latin1; recover UTF-8 Arabic names
-      const originalName = Buffer.from(req.file.originalname, "latin1").toString("utf8");
-      const title = (req.body.title as string | undefined)?.trim() || path.parse(originalName).name;
-      const count = await prisma.meetingFile.count();
-      const record = await prisma.meetingFile.create({
-        data: {
-          title,
-          originalName,
-          storedName: req.file.filename,
-          mimeType: req.file.mimetype,
-          sizeBytes: req.file.size,
-          sortOrder: count,
-          uploadedById: req.user!.id,
-        },
-      });
-      res.status(201).json(record);
+      next();
     });
+  },
+  async (req: AuthedRequest, res) => {
+    if (!req.file) return res.status(400).json({ error: "لم يتم إرفاق ملف" });
+    const originalName = Buffer.from(req.file.originalname, "latin1").toString("utf8");
+    const title = (req.body.title as string | undefined)?.trim() || path.parse(originalName).name;
+    const count = await prisma.meetingFile.count();
+    const record = await prisma.meetingFile.create({
+      data: {
+        title,
+        originalName,
+        storedName: req.file.filename,
+        mimeType: req.file.mimetype,
+        sizeBytes: req.file.size,
+        sortOrder: count,
+        uploadedById: req.user!.id,
+      },
+    });
+    res.status(201).json(record);
   }
 );
 
