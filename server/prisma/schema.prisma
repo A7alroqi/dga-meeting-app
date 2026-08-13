@@ -181,6 +181,7 @@ model Kpi {
   achievedValue   Float?
   achievedUnit    String?
   displayPercent  Int?
+  displayMode     String  @default("percentage") // percentage | count
   year            Int
   sortOrder       Int     @default(0)
   isDisplayed     Boolean @default(true)

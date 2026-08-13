@@ -31,6 +31,16 @@ function KpiCard({ kpi, canEdit }: { kpi: Kpi; canEdit: boolean }) {
   const hasValues = kpi.targetValue !== null && kpi.achievedValue !== null;
   const percent = hasValues ? getKpiPercent(kpi) : 0;
   const performance = getPerformanceColor(percent);
+  const isPercentageMode = kpi.displayMode === "percentage";
+
+  const handleToggleDisplayMode = () => {
+    updateMutation.mutate({
+      id: kpi.id,
+      data: {
+        displayMode: isPercentageMode ? "count" : "percentage",
+      },
+    });
+  };
 
   return (
     <Paper sx={{ p: 2.5, height: "100%", borderLeft: `4px solid ${performance.bg}` }} variant="outlined">
@@ -59,11 +69,21 @@ function KpiCard({ kpi, canEdit }: { kpi: Kpi; canEdit: boolean }) {
             }}
           />
         </Stack>
-        {canEdit && !editing && (
-          <IconButton size="small" onClick={() => setEditing(true)}>
-            <EditIcon fontSize="small" />
-          </IconButton>
-        )}
+        <Stack direction="row" spacing={0.5}>
+          {canEdit && !editing && hasValues && (
+            <Chip
+              label={isPercentageMode ? "نسبه" : "عدداو"}
+              size="small"
+              onClick={handleToggleDisplayMode}
+              sx={{ cursor: "pointer", bgcolor: "info.lighter", color: "info.dark" }}
+            />
+          )}
+          {canEdit && !editing && (
+            <IconButton size="small" onClick={() => setEditing(true)}>
+              <EditIcon fontSize="small" />
+            </IconButton>
+          )}
+        </Stack>
       </Stack>
 
       {!hasValues && !editing && (
@@ -114,17 +134,28 @@ function KpiCard({ kpi, canEdit }: { kpi: Kpi; canEdit: boolean }) {
       ) : (
         hasValues && (
           <Box sx={{ mt: 2 }}>
-            <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
-              <Typography variant="body2" color="text.secondary">
-                المحقق: {kpi.achievedValue}
-                {kpi.achievedUnit}
+            {isPercentageMode ? (
+              <>
+                <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    المحقق: {kpi.achievedValue}
+                    {kpi.achievedUnit}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    المستهدف: {kpi.targetValue}
+                    {kpi.targetUnit}
+                  </Typography>
+                </Stack>
+                <LinearProgress variant="determinate" value={percent} sx={{ height: 8, borderRadius: 4 }} />
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: "block" }}>
+                  {percent.toFixed(0)}%
+                </Typography>
+              </>
+            ) : (
+              <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                {kpi.achievedValue}{kpi.achievedUnit} من {kpi.targetValue}{kpi.targetUnit}
               </Typography>
-              <Typography variant="body2" color="text.secondary">
-                المستهدف: {kpi.targetValue}
-                {kpi.targetUnit}
-              </Typography>
-            </Stack>
-            <LinearProgress variant="determinate" value={percent} sx={{ height: 8, borderRadius: 4 }} />
+            )}
           </Box>
         )
       )}

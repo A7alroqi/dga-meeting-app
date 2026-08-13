@@ -66,6 +66,7 @@ export interface Kpi {
   achievedValue: number | null;
   achievedUnit: string | null;
   displayPercent: number | null;
+  displayMode: "percentage" | "count";
   year: number;
   sortOrder: number;
   isDisplayed?: boolean;
