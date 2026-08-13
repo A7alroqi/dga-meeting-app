@@ -175,7 +175,6 @@ function TaskCard({ task, onClick, canMarkComplete }: { task: Task; onClick: () 
         {/* Status Row */}
         <Stack direction="row" spacing={0.5} sx={{ mt: 1 }} flexWrap="wrap">
           <Chip size="small" variant="filled" label={TASK_STATUS_LABELS_AR[task.status]} sx={{ height: 24 }} />
-          <Chip size="small" label={PRIORITY_LEVEL_LABELS_AR[task.priorityLevel]} color={PRIORITY_COLORS[task.priorityLevel]} sx={{ height: 24 }} />
           {task.category && <Chip size="small" variant="outlined" label={task.category.nameAr} sx={{ height: 24 }} />}
         </Stack>
 
