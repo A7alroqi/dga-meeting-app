@@ -8,8 +8,10 @@ import { prisma } from "../db";
 import { requireAuth, requireEmployeeOrAdmin, type AuthedRequest } from "../middleware/auth";
 
 const UPLOADS_DIR = path.join(__dirname, "../../data/uploads");
-if (!process.env.VERCEL) {
+try {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+} catch {
+  // Ephemeral filesystem (Vercel) — ignore
 }
 
 const ALLOWED_EXTENSIONS = new Set([
