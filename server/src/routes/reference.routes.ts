@@ -35,7 +35,8 @@ export const governanceRouter = simpleCrudRouter(
 export const agendaRouter = simpleCrudRouter(
   prisma.agendaItem,
   z.object({ label: z.string().min(1), sortOrder: z.number().int().optional() }),
-  z.object({ label: z.string().min(1).optional(), sortOrder: z.number().int().optional() })
+  z.object({ label: z.string().min(1).optional(), sortOrder: z.number().int().optional() }),
+  true // Allow employees to edit agenda
 );
 
 export const objectivesRouter = simpleCrudRouter(
