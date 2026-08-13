@@ -8,7 +8,9 @@ import { prisma } from "../db";
 import { requireAuth, requireEmployeeOrAdmin, type AuthedRequest } from "../middleware/auth";
 
 const UPLOADS_DIR = path.join(__dirname, "../../data/uploads");
-fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+if (!process.env.VERCEL) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+}
 
 const ALLOWED_EXTENSIONS = new Set([
   ".pdf",
@@ -56,36 +58,39 @@ filesRouter.post(
   "/",
   requireAuth,
   requireEmployeeOrAdmin,
-  (req, res, next) => {
-    upload.single("file")(req, res, (err) => {
+  async (req, res) => {
+    if (process.env.VERCEL) {
+      return res.status(503).json({ error: "رفع الملفات غير مدعوم في هذا الإصدار" });
+    }
+    upload.single("file")(req, res, async (err) => {
       if (err) return res.status(400).json({ error: err.message ?? "فشل رفع الملف" });
-      next();
+      if (!req.file) return res.status(400).json({ error: "لم يتم إرفاق ملف" });
+      // multer decodes multipart filenames as latin1; recover UTF-8 Arabic names
+      const originalName = Buffer.from(req.file.originalname, "latin1").toString("utf8");
+      const title = (req.body.title as string | undefined)?.trim() || path.parse(originalName).name;
+      const count = await prisma.meetingFile.count();
+      const record = await prisma.meetingFile.create({
+        data: {
+          title,
+          originalName,
+          storedName: req.file.filename,
+          mimeType: req.file.mimetype,
+          sizeBytes: req.file.size,
+          sortOrder: count,
+          uploadedById: req.user!.id,
+        },
+      });
+      res.status(201).json(record);
     });
-  },
-  async (req: AuthedRequest, res) => {
-    if (!req.file) return res.status(400).json({ error: "لم يتم إرفاق ملف" });
-    // multer decodes multipart filenames as latin1; recover UTF-8 Arabic names
-    const originalName = Buffer.from(req.file.originalname, "latin1").toString("utf8");
-    const title = (req.body.title as string | undefined)?.trim() || path.parse(originalName).name;
-    const count = await prisma.meetingFile.count();
-    const record = await prisma.meetingFile.create({
-      data: {
-        title,
-        originalName,
-        storedName: req.file.filename,
-        mimeType: req.file.mimetype,
-        sizeBytes: req.file.size,
-        sortOrder: count,
-        uploadedById: req.user!.id,
-      },
-    });
-    res.status(201).json(record);
   }
 );
 
 filesRouter.get("/:id/content", requireAuth, async (req, res) => {
   const file = await prisma.meetingFile.findUnique({ where: { id: req.params.id } });
   if (!file) return res.status(404).json({ error: "الملف غير موجود" });
+  if (process.env.VERCEL) {
+    return res.status(503).json({ error: "تحميل الملفات غير مدعوم في هذا الإصدار" });
+  }
   const absolute = path.join(UPLOADS_DIR, file.storedName);
   if (!fs.existsSync(absolute)) return res.status(404).json({ error: "الملف غير موجود على الخادم" });
 
@@ -112,7 +117,9 @@ filesRouter.delete("/:id", requireAuth, requireEmployeeOrAdmin, async (req, res)
   const file = await prisma.meetingFile.findUnique({ where: { id: req.params.id } });
   if (!file) return res.status(404).json({ error: "الملف غير موجود" });
   await prisma.meetingFile.delete({ where: { id: file.id } });
-  const absolute = path.join(UPLOADS_DIR, file.storedName);
-  fs.promises.unlink(absolute).catch(() => {});
+  if (!process.env.VERCEL) {
+    const absolute = path.join(UPLOADS_DIR, file.storedName);
+    fs.promises.unlink(absolute).catch(() => {});
+  }
   res.status(204).end();
 });
