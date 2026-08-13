@@ -10,15 +10,9 @@ import { requireAuth, requireEmployeeOrAdmin, type AuthedRequest } from "../midd
 const UPLOADS_DIR = path.join(__dirname, "../../data/uploads");
 let storage: any;
 
-if (process.env.VERCEL) {
-  // Vercel has ephemeral filesystem — use memory storage as fallback
-  storage = multer.memoryStorage();
-} else {
-  try {
-    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  } catch {
-    // ignore
-  }
+try {
+  // Try disk storage first (local development)
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
   storage = multer.diskStorage({
     destination: UPLOADS_DIR,
     filename: (_req, file, cb) => {
@@ -26,6 +20,9 @@ if (process.env.VERCEL) {
       cb(null, `${crypto.randomUUID()}${ext}`);
     },
   });
+} catch {
+  // Fall back to memory storage (Vercel's ephemeral filesystem)
+  storage = multer.memoryStorage();
 }
 
 const ALLOWED_EXTENSIONS = new Set([
