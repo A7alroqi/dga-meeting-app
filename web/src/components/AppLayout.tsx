@@ -37,6 +37,7 @@ import InsightsRoundedIcon from "@mui/icons-material/InsightsRounded";
 import TaskAltRoundedIcon from "@mui/icons-material/TaskAltRounded";
 import ReportProblemRoundedIcon from "@mui/icons-material/ReportProblemRounded";
 import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import AccountTreeRoundedIcon from "@mui/icons-material/AccountTreeRounded";
 import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
 import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
 import ManageAccountsRoundedIcon from "@mui/icons-material/ManageAccountsRounded";
@@ -76,6 +77,7 @@ const NAV_ITEMS = [
   { to: "/challenges", label: "التحديات والدعم المطلوب", icon: ReportProblemRoundedIcon },
   { to: "/minutes", label: "محضر الاجتماع", icon: FactCheckRoundedIcon },
   { to: "/files", label: "ملفات العرض", icon: FolderRoundedIcon },
+  { to: "/org-chart", label: "الهيكل التنظيمي للإدارة", icon: AccountTreeRoundedIcon },
 ];
 
 const ADMIN_NAV_ITEMS = [

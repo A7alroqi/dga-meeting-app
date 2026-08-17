@@ -4,6 +4,7 @@ import { RequireAuth, RequireRole } from "./components/RoleGuard";
 import { LoginPage } from "./pages/LoginPage";
 import { HomePage } from "./pages/HomePage";
 import { GovernancePage } from "./pages/GovernancePage";
+import { OrgChartPage } from "./pages/OrgChartPage";
 import { AgendaPage } from "./pages/AgendaPage";
 import { ObjectivesPage } from "./pages/ObjectivesPage";
 import { KpiDashboardPage } from "./pages/KpiDashboardPage";
@@ -29,6 +30,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/governance" element={<GovernancePage />} />
+                <Route path="/org-chart" element={<OrgChartPage />} />
                 <Route path="/agenda" element={<AgendaPage />} />
                 <Route path="/objectives" element={<ObjectivesPage />} />
                 <Route path="/kpis" element={<KpiDashboardPage />} />
