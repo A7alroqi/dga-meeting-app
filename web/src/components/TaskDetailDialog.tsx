@@ -163,19 +163,21 @@ export function TaskDetailDialog({
           )}
 
           <Box>
-            <Typography variant="body2" gutterBottom>
-              نسبة الإنجاز: {task.completionPercent}%
-              {hasMilestones && (
-                <Typography component="span" variant="caption" color="text.secondary" sx={{ mr: 1 }}>
-                  (محسوبة تلقائيًا من المعالم)
+            {hasMilestones ? (
+              <>
+                <Typography variant="body2" gutterBottom>
+                  نسبة الإنجاز: {task.completionPercent}%
+                  <Typography component="span" variant="caption" color="text.secondary" sx={{ mr: 1 }}>
+                    (محسوبة تلقائيًا من المعالم)
+                  </Typography>
                 </Typography>
-              )}
-            </Typography>
-            <Slider
-              value={Math.min(100, task.completionPercent)}
-              disabled={!canEdit || hasMilestones}
-              onChangeCommitted={(_e, value) => patch({ completionPercent: value as number })}
-            />
+                <Slider value={Math.min(100, task.completionPercent)} disabled />
+              </>
+            ) : (
+              <Typography variant="body2" color="warning.main">
+                يلزم إضافة معلم واحد على الأقل لتحديد نسبة الإنجاز
+              </Typography>
+            )}
           </Box>
 
           <TextField
