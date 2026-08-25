@@ -78,6 +78,12 @@ export function TaskDetailDialog({
     updateTask.mutate({ id: task.id, data: { ...data, expectedUpdatedAt: task.updatedAt } });
   }
 
+  const hasMilestones = task.milestones.length > 0;
+  const sortedMilestones = [...task.milestones].sort((a, b) => {
+    if (a.isDone !== b.isDone) return a.isDone ? 1 : -1;
+    return a.sortOrder - b.sortOrder;
+  });
+
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>
@@ -159,10 +165,15 @@ export function TaskDetailDialog({
           <Box>
             <Typography variant="body2" gutterBottom>
               نسبة الإنجاز: {task.completionPercent}%
+              {hasMilestones && (
+                <Typography component="span" variant="caption" color="text.secondary" sx={{ mr: 1 }}>
+                  (محسوبة تلقائيًا من المعالم)
+                </Typography>
+              )}
             </Typography>
             <Slider
               value={Math.min(100, task.completionPercent)}
-              disabled={!canEdit}
+              disabled={!canEdit || hasMilestones}
               onChangeCommitted={(_e, value) => patch({ completionPercent: value as number })}
             />
           </Box>
@@ -214,7 +225,7 @@ export function TaskDetailDialog({
             معالم المهمة
           </Typography>
           <List dense disablePadding>
-            {task.milestones.map((m) => (
+            {sortedMilestones.map((m) => (
               <ListItem
                 key={m.id}
                 disableGutters
@@ -243,7 +254,15 @@ export function TaskDetailDialog({
                       }
                     />
                   }
-                  label={<ListItemText primary={m.label} />}
+                  label={
+                    <ListItemText
+                      primary={m.label}
+                      sx={{
+                        textDecoration: m.isDone ? "line-through" : "none",
+                        color: m.isDone ? "text.secondary" : "inherit",
+                      }}
+                    />
+                  }
                 />
               </ListItem>
             ))}

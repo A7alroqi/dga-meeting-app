@@ -172,6 +172,17 @@ export async function getTaskHistory(taskId: string) {
   });
 }
 
+async function recalculateTaskCompletion(taskId: string, actorId: string) {
+  const milestones = await prisma.taskMilestone.findMany({ where: { taskId } });
+  if (milestones.length === 0) return;
+  const doneCount = milestones.filter((m) => m.isDone).length;
+  const percent = Math.round((doneCount / milestones.length) * 100);
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { completionPercent: percent, updatedById: actorId },
+  });
+}
+
 export async function addMilestone(
   taskId: string,
   label: string,
@@ -191,6 +202,7 @@ export async function addMilestone(
       newValue: label,
     },
   });
+  await recalculateTaskCompletion(taskId, actorId);
   return milestone;
 }
 
@@ -213,6 +225,7 @@ export async function updateMilestone(
         newValue: String(data.isDone),
       },
     });
+    await recalculateTaskCompletion(taskId, actorId);
   }
   return updated;
 }
@@ -230,6 +243,7 @@ export async function deleteMilestone(taskId: string, milestoneId: string, actor
       newValue: null,
     },
   });
+  await recalculateTaskCompletion(taskId, actorId);
   return existing;
 }
 

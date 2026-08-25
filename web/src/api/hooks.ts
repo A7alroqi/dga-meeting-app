@@ -90,7 +90,10 @@ export function useAddMilestone() {
   return useMutation({
     mutationFn: ({ taskId, label }: { taskId: string; label: string }) =>
       api.post(`/tasks/${taskId}/milestones`, { label }),
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.taskId] }),
+    onSuccess: (_d, vars) => {
+      qc.invalidateQueries({ queryKey: ["tasks", vars.taskId] });
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
   });
 }
 
@@ -106,7 +109,10 @@ export function useUpdateMilestone() {
       milestoneId: string;
       data: { isDone?: boolean; label?: string };
     }) => api.patch(`/tasks/${taskId}/milestones/${milestoneId}`, data),
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.taskId] }),
+    onSuccess: (_d, vars) => {
+      qc.invalidateQueries({ queryKey: ["tasks", vars.taskId] });
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
   });
 }
 
@@ -115,7 +121,10 @@ export function useDeleteMilestone() {
   return useMutation({
     mutationFn: ({ taskId, milestoneId }: { taskId: string; milestoneId: string }) =>
       api.delete(`/tasks/${taskId}/milestones/${milestoneId}`),
-    onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["tasks", vars.taskId] }),
+    onSuccess: (_d, vars) => {
+      qc.invalidateQueries({ queryKey: ["tasks", vars.taskId] });
+      qc.invalidateQueries({ queryKey: ["tasks"] });
+    },
   });
 }
 
