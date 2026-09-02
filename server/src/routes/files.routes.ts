@@ -1,29 +1,11 @@
 import path from "node:path";
-import fs from "node:fs";
 import crypto from "node:crypto";
 import { Router } from "express";
 import multer from "multer";
 import { z } from "zod";
 import { prisma } from "../db";
 import { requireAuth, requireEmployeeOrAdmin, type AuthedRequest } from "../middleware/auth";
-
-const UPLOADS_DIR = path.join(__dirname, "../../data/uploads");
-let storage: any;
-
-try {
-  // Try disk storage first (local development)
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-  storage = multer.diskStorage({
-    destination: UPLOADS_DIR,
-    filename: (_req, file, cb) => {
-      const ext = path.extname(file.originalname).toLowerCase();
-      cb(null, `${crypto.randomUUID()}${ext}`);
-    },
-  });
-} catch {
-  // Fall back to memory storage (Vercel's ephemeral filesystem)
-  storage = multer.memoryStorage();
-}
+import { supabase, FILES_BUCKET } from "../lib/supabase";
 
 const ALLOWED_EXTENSIONS = new Set([
   ".pdf",
@@ -41,7 +23,7 @@ const ALLOWED_EXTENSIONS = new Set([
 const MAX_SIZE_BYTES = 100 * 1024 * 1024; // 100MB
 
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: MAX_SIZE_BYTES },
   fileFilter: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
@@ -63,10 +45,7 @@ filesRouter.post(
   "/",
   requireAuth,
   requireEmployeeOrAdmin,
-  (req: AuthedRequest, res, next) => {
-    if (process.env.VERCEL) {
-      return res.status(503).json({ error: "رفع الملفات غير مدعوم في هذا الإصدار" });
-    }
+  (req, res, next) => {
     upload.single("file")(req, res, (err) => {
       if (err) return res.status(400).json({ error: err.message ?? "فشل رفع الملف" });
       next();
@@ -74,14 +53,30 @@ filesRouter.post(
   },
   async (req: AuthedRequest, res) => {
     if (!req.file) return res.status(400).json({ error: "لم يتم إرفاق ملف" });
+
     const originalName = Buffer.from(req.file.originalname, "latin1").toString("utf8");
     const title = (req.body.title as string | undefined)?.trim() || path.parse(originalName).name;
+    const ext = path.extname(originalName).toLowerCase();
+    const storedName = `${crypto.randomUUID()}${ext}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from(FILES_BUCKET)
+      .upload(storedName, req.file.buffer, {
+        contentType: req.file.mimetype,
+        upsert: false,
+      });
+
+    if (uploadError) {
+      console.error("Supabase upload error:", uploadError);
+      return res.status(500).json({ error: "فشل رفع الملف إلى التخزين السحابي" });
+    }
+
     const count = await prisma.meetingFile.count();
     const record = await prisma.meetingFile.create({
       data: {
         title,
         originalName,
-        storedName: req.file.filename,
+        storedName,
         mimeType: req.file.mimetype,
         sizeBytes: req.file.size,
         sortOrder: count,
@@ -95,17 +90,18 @@ filesRouter.post(
 filesRouter.get("/:id/content", requireAuth, async (req, res) => {
   const file = await prisma.meetingFile.findUnique({ where: { id: req.params.id } });
   if (!file) return res.status(404).json({ error: "الملف غير موجود" });
-  if (process.env.VERCEL) {
-    return res.status(503).json({ error: "تحميل الملفات غير مدعوم في هذا الإصدار" });
-  }
-  const absolute = path.join(UPLOADS_DIR, file.storedName);
-  if (!fs.existsSync(absolute)) return res.status(404).json({ error: "الملف غير موجود على الخادم" });
 
-  const encodedName = encodeURIComponent(file.originalName);
-  const disposition = req.query.download === "1" ? "attachment" : "inline";
-  res.setHeader("Content-Type", file.mimeType);
-  res.setHeader("Content-Disposition", `${disposition}; filename*=UTF-8''${encodedName}`);
-  res.sendFile(absolute);
+  const wantsDownload = req.query.download === "1";
+  const { data, error } = await supabase.storage
+    .from(FILES_BUCKET)
+    .createSignedUrl(file.storedName, 60, wantsDownload ? { download: file.originalName } : undefined);
+
+  if (error || !data) {
+    console.error("Supabase signed URL error:", error);
+    return res.status(404).json({ error: "الملف غير موجود على الخادم" });
+  }
+
+  res.redirect(data.signedUrl);
 });
 
 const patchSchema = z.object({
@@ -124,9 +120,6 @@ filesRouter.delete("/:id", requireAuth, requireEmployeeOrAdmin, async (req, res)
   const file = await prisma.meetingFile.findUnique({ where: { id: req.params.id } });
   if (!file) return res.status(404).json({ error: "الملف غير موجود" });
   await prisma.meetingFile.delete({ where: { id: file.id } });
-  if (!process.env.VERCEL) {
-    const absolute = path.join(UPLOADS_DIR, file.storedName);
-    fs.promises.unlink(absolute).catch(() => {});
-  }
+  await supabase.storage.from(FILES_BUCKET).remove([file.storedName]).catch(() => {});
   res.status(204).end();
 });
