@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Box,
   Typography,
@@ -9,9 +10,28 @@ import {
   Divider,
   Checkbox,
   CircularProgress,
+  IconButton,
+  TextField,
 } from "@mui/material";
 import EventRoundedIcon from "@mui/icons-material/EventRounded";
-import { useSettings, useTasks, useKpis, useMeetings, useActionPoints } from "../api/hooks";
+import MenuBookRoundedIcon from "@mui/icons-material/MenuBookRounded";
+import ScienceRoundedIcon from "@mui/icons-material/ScienceRounded";
+import SupportAgentRoundedIcon from "@mui/icons-material/SupportAgentRounded";
+import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import { useAuth } from "../AuthContext";
+import { isAdmin } from "../components/RoleGuard";
+import { usePresenting } from "../components/AppLayout";
+import {
+  useSettings,
+  useUpdateSettings,
+  useTasks,
+  useKpis,
+  useMeetings,
+  useActionPoints,
+} from "../api/hooks";
 import { getPerformanceColor, getKpiPercent } from "../utils/kpi";
 import { formatDateAr } from "../utils/formatDate";
 import { cleanLongText } from "../utils/textUtils";
@@ -103,7 +123,102 @@ function KpiMiniRow({ name, percent }: { name: string; percent: number }) {
   );
 }
 
+const CONSULTATION_URL = "https://digitalconsultation.dga.gov.sa";
+
+function CountCard({
+  title,
+  icon,
+  settingKey,
+  value,
+  canEdit,
+  href,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  settingKey: string;
+  value: string;
+  canEdit: boolean;
+  href?: string;
+}) {
+  const update = useUpdateSettings();
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+
+  const save = () => {
+    update.mutate({ [settingKey]: draft.trim() || "0" });
+    setEditing(false);
+  };
+
+  const linkProps = href
+    ? { component: "a", href, target: "_blank", rel: "noopener noreferrer" }
+    : {};
+
+  return (
+    <Paper
+      {...linkProps}
+      sx={{
+        p: 3,
+        height: "100%",
+        textDecoration: "none",
+        color: "inherit",
+        display: "block",
+        cursor: href ? "pointer" : "default",
+        "&:hover": href ? { boxShadow: 3 } : undefined,
+      }}
+    >
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" spacing={1.5} alignItems="center">
+          <Box sx={{ color: "primary.main", display: "flex" }}>{icon}</Box>
+          <Typography variant="subtitle1" fontWeight={700}>
+            {title}
+          </Typography>
+        </Stack>
+        <Stack direction="row" spacing={0.5} alignItems="center">
+          {href && <OpenInNewRoundedIcon fontSize="small" color="action" />}
+          {canEdit && !editing && (
+            <IconButton
+              size="small"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setDraft(value);
+                setEditing(true);
+              }}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          )}
+        </Stack>
+      </Stack>
+      {editing ? (
+        <Stack direction="row" spacing={1} alignItems="center" sx={{ mt: 2 }}>
+          <TextField
+            size="small"
+            type="number"
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            sx={{ width: 120 }}
+          />
+          <IconButton color="primary" onClick={save}>
+            <CheckIcon />
+          </IconButton>
+          <IconButton onClick={() => setEditing(false)}>
+            <CloseIcon />
+          </IconButton>
+        </Stack>
+      ) : (
+        <Typography variant="h3" fontWeight={900} sx={{ mt: 1.5, color: "primary.main" }}>
+          {value}
+        </Typography>
+      )}
+    </Paper>
+  );
+}
+
 export function HomePage() {
+  const { user } = useAuth();
+  const presenting = usePresenting();
+  const canEditCounts = isAdmin(user?.role) && !presenting;
   const { data: settings } = useSettings();
   const { data: tasks } = useTasks();
   const { data: kpis } = useKpis(2026);
@@ -136,6 +251,37 @@ export function HomePage() {
           {settings?.department_name ?? "إدارة تخطيط الابتكار"} - {settings?.year ?? "2026"}
         </Typography>
       </Paper>
+
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid item xs={12} sm={4}>
+          <CountCard
+            title="الأطر والأدلة"
+            icon={<MenuBookRoundedIcon />}
+            settingKey="frameworks_count"
+            value={settings?.frameworks_count ?? "0"}
+            canEdit={canEditCounts}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <CountCard
+            title="الدراسات"
+            icon={<ScienceRoundedIcon />}
+            settingKey="studies_count"
+            value={settings?.studies_count ?? "0"}
+            canEdit={canEditCounts}
+          />
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <CountCard
+            title="الاستشارات"
+            icon={<SupportAgentRoundedIcon />}
+            settingKey="consultations_count"
+            value={settings?.consultations_count ?? "0"}
+            canEdit={canEditCounts}
+            href={CONSULTATION_URL}
+          />
+        </Grid>
+      </Grid>
 
       <Grid container spacing={2} sx={{ mb: 3 }}>
         <Grid item xs={12} sm={4}>
