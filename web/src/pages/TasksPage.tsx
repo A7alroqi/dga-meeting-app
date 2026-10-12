@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -208,6 +208,7 @@ export function TasksPage() {
   const { data: categories } = useCategories();
   const [categoryId, setCategoryId] = useState<string>("all");
   const [status, setStatus] = useState<string>("");
+  const [sortBy, setSortBy] = useState<"default" | "dateAsc" | "dateDesc">("default");
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
 
@@ -215,6 +216,20 @@ export function TasksPage() {
     categoryId: categoryId === "all" ? undefined : categoryId,
     status: status || undefined,
   });
+
+  // Tasks without a concrete due date (ongoing / unset) always go last.
+  const sortedTasks = useMemo(() => {
+    if (!tasks || sortBy === "default") return tasks;
+    const dir = sortBy === "dateAsc" ? 1 : -1;
+    return [...tasks].sort((a, b) => {
+      const aTime = a.dueDate ? new Date(a.dueDate).getTime() : null;
+      const bTime = b.dueDate ? new Date(b.dueDate).getTime() : null;
+      if (aTime === null && bTime === null) return 0;
+      if (aTime === null) return 1;
+      if (bTime === null) return -1;
+      return (aTime - bTime) * dir;
+    });
+  }, [tasks, sortBy]);
 
   return (
     <Box>
@@ -242,26 +257,40 @@ export function TasksPage() {
         ))}
       </Tabs>
 
-      <TextField
-        select
-        size="small"
-        label="الحالة"
-        value={status}
-        onChange={(e) => setStatus(e.target.value)}
-        sx={{ minWidth: 180, mb: 2 }}
-      >
-        <MenuItem value="">الكل</MenuItem>
-        {Object.entries(TASK_STATUS_LABELS_AR).map(([value, label]) => (
-          <MenuItem key={value} value={value}>
-            {label}
-          </MenuItem>
-        ))}
-      </TextField>
+      <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap sx={{ mb: 2 }}>
+        <TextField
+          select
+          size="small"
+          label="الحالة"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          sx={{ minWidth: 180 }}
+        >
+          <MenuItem value="">الكل</MenuItem>
+          {Object.entries(TASK_STATUS_LABELS_AR).map(([value, label]) => (
+            <MenuItem key={value} value={value}>
+              {label}
+            </MenuItem>
+          ))}
+        </TextField>
+        <TextField
+          select
+          size="small"
+          label="الترتيب"
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value as "default" | "dateAsc" | "dateDesc")}
+          sx={{ minWidth: 180 }}
+        >
+          <MenuItem value="default">الافتراضي</MenuItem>
+          <MenuItem value="dateAsc">الأقرب تاريخًا أولًا</MenuItem>
+          <MenuItem value="dateDesc">الأبعد تاريخًا أولًا</MenuItem>
+        </TextField>
+      </Stack>
 
       {isLoading && <LinearProgress />}
 
       <Grid container spacing={2}>
-        {tasks?.map((task) => (
+        {sortedTasks?.map((task) => (
           <Grid item xs={12} md={6} lg={4} key={task.id}>
             <TaskCard
               task={task}
