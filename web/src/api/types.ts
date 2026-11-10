@@ -161,6 +161,7 @@ export interface ActionPoint {
   id: string;
   meetingId: string;
   text: string;
+  ownerName: string | null;
   isDone: boolean;
   sortOrder: number;
   createdAt: string;

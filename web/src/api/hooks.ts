@@ -354,8 +354,8 @@ export function useActionPoints(meetingId: string | undefined) {
 export function useCreateActionPoint() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ meetingId, text }: { meetingId: string; text: string }) =>
-      api.post<ActionPoint>(`/meetings/${meetingId}/action-points`, { text }),
+    mutationFn: ({ meetingId, text, ownerName }: { meetingId: string; text: string; ownerName?: string | null }) =>
+      api.post<ActionPoint>(`/meetings/${meetingId}/action-points`, { text, ownerName }),
     onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["action-points", vars.meetingId] }),
   });
 }
@@ -370,7 +370,7 @@ export function useUpdateActionPoint() {
     }: {
       id: string;
       meetingId: string;
-      data: Partial<Pick<ActionPoint, "text" | "isDone">>;
+      data: Partial<Pick<ActionPoint, "text" | "isDone" | "ownerName">>;
     }) => api.patch<ActionPoint>(`/action-points/${id}`, data),
     onSuccess: (_d, vars) => qc.invalidateQueries({ queryKey: ["action-points", vars.meetingId] }),
   });

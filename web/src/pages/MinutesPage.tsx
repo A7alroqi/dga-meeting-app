@@ -23,6 +23,7 @@ import {
   useCreateActionPoint,
   useUpdateActionPoint,
   useDeleteActionPoint,
+  usePeople,
 } from "../api/hooks";
 import { formatDateAr } from "../utils/formatDate";
 import type { ActionPoint } from "../api/types";
@@ -30,14 +31,23 @@ import type { ActionPoint } from "../api/types";
 function ActionPointRow({
   actionPoint,
   canEdit,
+  ownerOptions,
   onToggle,
+  onOwnerChange,
   onDelete,
 }: {
   actionPoint: ActionPoint;
   canEdit: boolean;
+  ownerOptions: string[];
   onToggle: (isDone: boolean) => void;
+  onOwnerChange: (ownerName: string | null) => void;
   onDelete: () => void;
 }) {
+  // Keep a previously saved owner selectable even if they were later
+  // removed from the people directory.
+  const options = actionPoint.ownerName && !ownerOptions.includes(actionPoint.ownerName)
+    ? [...ownerOptions, actionPoint.ownerName]
+    : ownerOptions;
   return (
     <Paper
       variant="outlined"
@@ -55,16 +65,41 @@ function ActionPointRow({
         onChange={(e) => onToggle(e.target.checked)}
         disabled={!canEdit}
       />
-      <Typography
-        sx={{
-          flex: 1,
-          textDecoration: actionPoint.isDone ? "line-through" : "none",
-          color: actionPoint.isDone ? "text.secondary" : "text.primary",
-          wordBreak: "break-word",
-        }}
-      >
-        {actionPoint.text}
-      </Typography>
+      <Box sx={{ flex: 1, minWidth: 0 }}>
+        <Typography
+          sx={{
+            textDecoration: actionPoint.isDone ? "line-through" : "none",
+            color: actionPoint.isDone ? "text.secondary" : "text.primary",
+            wordBreak: "break-word",
+          }}
+        >
+          {actionPoint.text}
+        </Typography>
+        {canEdit ? (
+          <TextField
+            select
+            size="small"
+            variant="standard"
+            label="المسؤول"
+            value={actionPoint.ownerName ?? ""}
+            onChange={(e) => onOwnerChange(e.target.value || null)}
+            sx={{ minWidth: 160, mt: 0.5 }}
+          >
+            <MenuItem value="">بدون مسؤول</MenuItem>
+            {options.map((name) => (
+              <MenuItem key={name} value={name}>
+                {name}
+              </MenuItem>
+            ))}
+          </TextField>
+        ) : (
+          actionPoint.ownerName && (
+            <Typography variant="caption" color="text.secondary">
+              المسؤول: {actionPoint.ownerName}
+            </Typography>
+          )
+        )}
+      </Box>
       {canEdit && (
         <IconButton size="small" onClick={onDelete} sx={{ color: "error.main" }}>
           <DeleteIcon fontSize="small" />
@@ -93,7 +128,11 @@ export function MinutesPage() {
   const updateActionPoint = useUpdateActionPoint();
   const deleteActionPoint = useDeleteActionPoint();
 
+  const { data: people } = usePeople();
+  const ownerOptions = (people ?? []).filter((p) => p.isActive).map((p) => p.name);
+
   const [text, setText] = useState("");
+  const [owner, setOwner] = useState("");
 
   return (
     <Box>
@@ -141,8 +180,12 @@ export function MinutesPage() {
               key={ap.id}
               actionPoint={ap}
               canEdit={canEdit}
+              ownerOptions={ownerOptions}
               onToggle={(isDone) =>
                 updateActionPoint.mutate({ id: ap.id, meetingId, data: { isDone } })
+              }
+              onOwnerChange={(ownerName) =>
+                updateActionPoint.mutate({ id: ap.id, meetingId, data: { ownerName } })
               }
               onDelete={() => deleteActionPoint.mutate({ id: ap.id, meetingId })}
             />
@@ -168,14 +211,33 @@ export function MinutesPage() {
               fullWidth
               variant="outlined"
             />
+            <TextField
+              select
+              label="المسؤول"
+              value={owner}
+              onChange={(e) => setOwner(e.target.value)}
+              sx={{ minWidth: 180 }}
+            >
+              <MenuItem value="">بدون مسؤول</MenuItem>
+              {ownerOptions.map((name) => (
+                <MenuItem key={name} value={name}>
+                  {name}
+                </MenuItem>
+              ))}
+            </TextField>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
               disabled={!text.trim()}
               onClick={() => {
                 createActionPoint.mutate(
-                  { meetingId, text: text.trim() },
-                  { onSuccess: () => setText("") }
+                  { meetingId, text: text.trim(), ownerName: owner || null },
+                  {
+                    onSuccess: () => {
+                      setText("");
+                      setOwner("");
+                    },
+                  }
                 );
               }}
             >

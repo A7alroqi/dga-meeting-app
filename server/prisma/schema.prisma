@@ -160,6 +160,7 @@ model ActionPoint {
   id          String   @id @default(cuid())
   meetingId   String
   text        String
+  ownerName   String?
   isDone      Boolean  @default(false)
   sortOrder   Int      @default(0)
   createdById String?

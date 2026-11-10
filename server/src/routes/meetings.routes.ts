@@ -19,11 +19,31 @@ const meetingSchema = z.object({
 meetingsRouter.post("/", requireAuth, requireEmployeeOrAdmin, async (req: AuthedRequest, res) => {
   const parsed = meetingSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "بيانات غير صحيحة" });
+  // Action points that were not checked off carry over to the new meeting
+  // (copied, so the previous meeting's minutes stay as they were).
+  const previousMeeting = await prisma.meeting.findFirst({ orderBy: { meetingDate: "desc" } });
+  const unfinished = previousMeeting
+    ? await prisma.actionPoint.findMany({
+        where: { meetingId: previousMeeting.id, isDone: false },
+        orderBy: { sortOrder: "asc" },
+      })
+    : [];
+
   const meeting = await prisma.meeting.create({
     data: {
       meetingDate: new Date(parsed.data.meetingDate),
       title: parsed.data.title,
       createdById: req.user!.id,
+      actionPoints: unfinished.length
+        ? {
+            create: unfinished.map((ap, i) => ({
+              text: ap.text,
+              ownerName: ap.ownerName,
+              sortOrder: i,
+              createdById: ap.createdById,
+            })),
+          }
+        : undefined,
     },
   });
   res.status(201).json(meeting);
@@ -92,6 +112,7 @@ meetingsRouter.get("/:id/action-points", requireAuth, async (req, res) => {
 
 const actionPointSchema = z.object({
   text: z.string().min(1),
+  ownerName: z.string().nullable().optional(),
   sortOrder: z.number().int().optional(),
 });
 
@@ -105,6 +126,7 @@ meetingsRouter.post(
     const data = {
       meetingId: req.params.id,
       text: parsed.data.text!,
+      ownerName: parsed.data.ownerName || null,
       sortOrder: parsed.data.sortOrder ?? 0,
       createdById: req.user!.id,
     } satisfies Prisma.ActionPointUncheckedCreateInput;
@@ -117,6 +139,7 @@ export const actionPointsRouter = Router();
 
 const actionPointPatchSchema = z.object({
   text: z.string().min(1).optional(),
+  ownerName: z.string().nullable().optional(),
   isDone: z.boolean().optional(),
   sortOrder: z.number().int().optional(),
 });

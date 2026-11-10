@@ -361,16 +361,23 @@ export function HomePage() {
                 {lastMeetingActionPoints.map((ap) => (
                   <Stack key={ap.id} direction="row" alignItems="flex-start" spacing={1}>
                     <Checkbox checked={ap.isDone} disabled size="small" sx={{ p: 0.5, mt: -0.5 }} />
-                    <Typography
-                      variant="body2"
-                      sx={{
-                        textDecoration: ap.isDone ? "line-through" : "none",
-                        color: ap.isDone ? "text.secondary" : "text.primary",
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {ap.text}
-                    </Typography>
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          textDecoration: ap.isDone ? "line-through" : "none",
+                          color: ap.isDone ? "text.secondary" : "text.primary",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {ap.text}
+                      </Typography>
+                      {ap.ownerName && (
+                        <Typography variant="caption" color="text.secondary">
+                          المسؤول: {ap.ownerName}
+                        </Typography>
+                      )}
+                    </Box>
                   </Stack>
                 ))}
               </Stack>
