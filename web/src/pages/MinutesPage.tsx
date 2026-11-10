@@ -28,6 +28,8 @@ import {
 import { formatDateAr } from "../utils/formatDate";
 import type { ActionPoint } from "../api/types";
 
+const EVERYONE = "الجميع";
+
 function ActionPointRow({
   actionPoint,
   canEdit,
@@ -129,7 +131,11 @@ export function MinutesPage() {
   const deleteActionPoint = useDeleteActionPoint();
 
   const { data: people } = usePeople();
-  const ownerOptions = (people ?? []).filter((p) => p.isActive).map((p) => p.name);
+  // "الجميع" is always available as an owner, ahead of the people directory.
+  const ownerOptions = [
+    EVERYONE,
+    ...(people ?? []).filter((p) => p.isActive && p.name !== EVERYONE).map((p) => p.name),
+  ];
 
   const [text, setText] = useState("");
   const [owner, setOwner] = useState("");
